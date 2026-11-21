@@ -1,0 +1,1500 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meta de subs BLOODSITAX</title>
+<style>
+  /* ============ BASE (overlay y panel) ============ */
+  html, body { margin: 0; padding: 0; }
+  #widget { position: absolute; left: 0; top: 0; width: 100%; height: 100%; }
+  html.display, body.display { background: transparent !important; overflow: hidden; width: 100vw; height: 100vh; }
+
+  /*PANEL-CSS-BEGIN*/
+  :root {
+    --pink: #FF4FB8;       /* rosa neón */
+    --pink-2: #FF6FC6;
+    --pastel: #FF9AD5;     /* rosa pastel */
+    --lila: #C77DFF;       /* lila neón */
+    --bg: #0C0510;
+    --panel: #170A1D;
+    --panel-2: #211029;
+    --border: #3D1E48;
+    --text: #FFEAF6;
+    --muted: #A57D9E;
+    --ok: #5CF2B8;
+    --manual: #FF5C7A;
+    --warn: #FFB36B;
+    --anon: #FFB3E0;
+    --info: #C77DFF;
+    --mono: "Consolas", "SFMono-Regular", "DejaVu Sans Mono", monospace;
+  }
+  body:not(.display) { background: var(--bg); color: var(--text); font-family: var(--mono); font-size: 14px; -webkit-font-smoothing: antialiased; }
+  body:not(.display) * { box-sizing: border-box; }
+  #panel { max-width: 1260px; margin: 0 auto; padding: 26px 22px 60px; }
+  .layout { display: grid; grid-template-columns: minmax(0, 1fr) 410px; gap: 22px; align-items: start; }
+  .col-main { min-width: 0; }
+  .col-side { position: sticky; top: 18px; }
+  @media (max-width: 1020px) { .layout { grid-template-columns: 1fr; } .col-side { position: static; } }
+
+  .brand { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin-bottom: 16px; }
+  .brand h1 { margin: 0; font-size: 19px; letter-spacing: .3em; color: var(--pink); text-shadow: 0 0 14px rgba(255,79,184,.55); }
+  .brand span { font-size: 12px; letter-spacing: .16em; color: var(--muted); }
+
+  .banner { border: 1px solid var(--warn); background: rgba(255,160,46,.08); color: #FFD6A3; border-radius: 12px; padding: 14px 16px; margin-bottom: 16px; line-height: 1.6; font-size: 13px; }
+  .banner code { color: #fff; }
+
+  .preview { position: relative; border: 1px solid var(--border); border-radius: 14px; overflow: hidden;
+    background: repeating-conic-gradient(#1a0c20 0% 25%, #12071a 0% 50%) 50% / 20px 20px; }
+  .pv-wrap { position: relative; width: 100%; }
+  #pvStage { position: absolute; left: 0; top: 0; width: 700px; height: 560px; transform-origin: top left; overflow: hidden; }
+
+  .block { background: var(--panel); border: 1px solid var(--border); border-radius: 14px; padding: 18px; margin-bottom: 14px; }
+  .title { display: flex; align-items: center; gap: 10px; font-size: 13px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--text); }
+  .title::before { content: ""; width: 4px; height: 15px; border-radius: 2px; background: var(--pink); flex: none; }
+  .title small { font-size: 11px; font-weight: 400; letter-spacing: .05em; text-transform: none; color: var(--muted); }
+  .block > .title { margin-bottom: 14px; }
+  .block-head { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 12px; flex-wrap: wrap; }
+  details.block summary { cursor: pointer; list-style: none; }
+  details.block summary::-webkit-details-marker { display: none; }
+  details.block summary .chev { margin-left: auto; color: var(--muted); font-size: 18px; transition: transform .15s; }
+  details.block[open] summary .chev { transform: rotate(90deg); }
+  details.block[open] > summary { margin-bottom: 16px; }
+
+  button { font-family: var(--mono); cursor: pointer; border: 1px solid var(--border); background: var(--panel-2); color: var(--text);
+    border-radius: 9px; padding: 11px 15px; font-size: 13px; letter-spacing: .05em; font-weight: 700; }
+  button:hover { border-color: var(--pink); }
+  button:disabled { opacity: .45; cursor: default; }
+  button.primary { background: var(--pink); border-color: var(--pink); color: #fff; }
+  button.primary:hover { background: var(--pink-2); }
+  button.ghost { background: transparent; }
+  button.danger { color: var(--manual); }
+  button.danger:hover { border-color: var(--manual); background: rgba(255,77,77,.08); }
+  button.small { padding: 7px 11px; font-size: 11px; }
+
+  input[type="text"], input[type="number"], select {
+    font-family: var(--mono); background: var(--bg); border: 1px solid var(--border); color: var(--text);
+    border-radius: 9px; padding: 10px 12px; font-size: 14px; width: 100%; min-width: 0; }
+  input:focus, select:focus { outline: none; border-color: var(--pink); }
+  input[type="color"] { width: 100%; height: 40px; border: 1px solid var(--border); border-radius: 9px; background: var(--bg); padding: 3px; cursor: pointer; }
+  input[type="range"] { width: 100%; accent-color: var(--pink); }
+  input.nospin::-webkit-outer-spin-button, input.nospin::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+  input.nospin { -moz-appearance: textfield; }
+  .row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+  .row > * { flex: 1; }
+  .row > .fit { flex: 0 0 auto; }
+  .hint { font-size: 12px; color: var(--muted); line-height: 1.65; margin: 10px 0 0; }
+  .hint code { color: var(--pastel); }
+  .flash { font-size: 12px; color: var(--pastel); min-height: 16px; margin-top: 8px; }
+  .sublabel { font-size: 11px; letter-spacing: .14em; color: var(--muted); text-transform: uppercase; margin-bottom: 8px; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
+
+  /* conteo grande */
+  .big { display: flex; align-items: center; gap: 22px; flex-wrap: wrap; }
+  .big-num { font-size: 56px; font-weight: 700; font-variant-numeric: tabular-nums; letter-spacing: .02em; line-height: 1; }
+  .big-num small { font-size: 26px; color: var(--muted); }
+  .big-side { flex: 1; min-width: 220px; display: flex; flex-direction: column; gap: 10px; }
+  .bar { height: 10px; border-radius: 6px; background: var(--bg); border: 1px solid var(--border); overflow: hidden; }
+  .bar i { display: block; height: 100%; width: 0; background: linear-gradient(90deg, var(--pink), var(--pastel)); transition: width .4s; }
+  .pct { font-size: 12px; color: var(--muted); letter-spacing: .08em; }
+  .quick { display: flex; gap: 8px; }
+  .quick button { flex: 1; font-size: 17px; padding: 12px 0; }
+  .quick button.minus { color: var(--manual); background: transparent; }
+
+  .status { font-size: 12px; letter-spacing: .12em; color: var(--muted); text-transform: uppercase; display: inline-flex; align-items: center; gap: 9px; }
+  .status .dot { width: 9px; height: 9px; border-radius: 50%; background: var(--muted); flex: none; }
+  .status.live { color: var(--text); }
+  .status.live .dot { background: var(--ok); box-shadow: 0 0 8px var(--ok); }
+  .status.err .dot { background: var(--manual); }
+
+  .ops { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  @media (max-width: 720px) { .ops { grid-template-columns: 1fr; } }
+  .op { background: var(--bg); border: 1px solid var(--border); border-radius: 11px; padding: 14px; display: flex; flex-direction: column; gap: 10px; }
+  .op .ol { font-size: 12px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }
+  .op .ol small { display: block; font-weight: 400; letter-spacing: .02em; text-transform: none; color: var(--muted); margin-top: 4px; }
+  .op input { text-align: center; font-size: 20px; font-weight: 700; }
+  .op .row button { padding: 11px 8px; }
+  .op.reset { border-color: rgba(255,77,77,.4); }
+
+  /* estilo */
+  .sgroup { margin-bottom: 18px; }
+  .sgrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  @media (max-width: 620px) { .sgrid { grid-template-columns: 1fr 1fr; } }
+  .field { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+  .field.wide { grid-column: 1 / -1; }
+  .field label { font-size: 11px; letter-spacing: .08em; color: var(--muted); text-transform: uppercase; }
+  .field label b { color: var(--text); font-weight: 400; }
+  .check { display: inline-flex; align-items: center; gap: 8px; font-size: 12px; color: var(--text); cursor: pointer; padding: 10px 0; }
+  .check input { accent-color: var(--pink); width: 16px; height: 16px; }
+
+  /* conexiones */
+  .conn-list { display: flex; flex-direction: column; gap: 8px; }
+  .keybox { display: flex; gap: 8px; align-items: center; }
+  .keybox code { flex: 1; background: var(--bg); border: 1px solid var(--border); border-radius: 9px; padding: 10px 12px; color: var(--pastel); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+  /* historial */
+  .hist-card { display: flex; flex-direction: column; max-height: calc(100vh - 36px); margin-bottom: 0; }
+  @media (max-width: 1020px) { .hist-card { max-height: none; } }
+  .legend { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 11px; color: var(--muted); letter-spacing: .06em; }
+  .legend i { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 6px; vertical-align: -1px; }
+  .hist { flex: 1; min-height: 220px; overflow-y: auto; display: flex; flex-direction: column; gap: 6px; padding-right: 4px; }
+  @media (max-width: 1020px) { .hist { max-height: 460px; } }
+  .hist:empty::before { content: "Todavía no hay movimientos."; font-size: 13px; color: var(--muted); padding: 8px 2px; }
+  .hrow { display: grid; grid-template-columns: 1fr auto; gap: 4px 12px; padding: 10px 12px; border-radius: 8px; background: var(--bg); border-left: 3px solid var(--muted); }
+  .hrow .hx { font-size: 13px; color: var(--text); min-width: 0; overflow-wrap: anywhere; line-height: 1.4; }
+  .hrow .hd { font-size: 14px; font-weight: 700; white-space: nowrap; text-align: right; font-variant-numeric: tabular-nums; }
+  .hrow .hn { grid-column: 1 / -1; font-size: 12px; line-height: 1.4; color: var(--warn); }
+  .hrow .ht { grid-column: 1 / -1; font-size: 11px; color: var(--muted); font-variant-numeric: tabular-nums; }
+  .hrow .ht em { font-style: normal; margin-left: 8px; }
+  .hrow.auto { border-left-color: var(--ok); } .hrow.auto .hd { color: var(--ok); }
+  .hrow.anon { border-left-color: var(--anon); background: rgba(255,179,209,.06); } .hrow.anon .hd { color: var(--anon); }
+  .hrow.manual { border-left-color: var(--manual); } .hrow.manual .hd { color: var(--manual); }
+  .hrow.warn { border-left-color: var(--warn); background: rgba(255,160,46,.07); } .hrow.warn .hd { color: var(--warn); } .hrow.warn .hx { color: #FFD6A3; }
+  .hrow.info { border-left-color: var(--info); } .hrow.info .hd { color: var(--info); }
+  .hist-foot { display: flex; gap: 8px; margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border); flex-wrap: wrap; }
+  .hist-foot input { flex: 1; min-width: 140px; }
+
+  /* pestañas entre paneles */
+  .tabs { display: flex; gap: 6px; flex-wrap: wrap; }
+  .tabs a { font-size: 12px; font-weight: 700; letter-spacing: .14em; text-decoration: none; color: var(--muted);
+    border: 1px solid var(--border); border-radius: 9px; padding: 8px 14px; background: var(--panel); }
+  .tabs a:hover { color: var(--text); border-color: var(--pink); }
+  .tabs a.on { color: #fff; background: var(--pink); border-color: var(--pink); box-shadow: 0 0 14px rgba(255,79,184,.45); }
+  .brand .who { margin-left: auto; font-size: 11px; letter-spacing: .04em; display: inline-flex; gap: 8px; align-items: center; color: var(--muted); }
+
+  /* luces: ¿está contando cada overlay de OBS? */
+  .ovlights { display: flex; gap: 10px; flex-wrap: wrap; margin: 0 0 14px; }
+  .light { display: inline-flex; align-items: center; gap: 10px; padding: 9px 14px; border-radius: 10px; font-size: 12px;
+    font-weight: 700; letter-spacing: .12em; text-transform: uppercase; background: rgba(255,92,122,.08); border: 1px solid rgba(255,92,122,.5); color: #FFC2CE; }
+  .light .ld { width: 12px; height: 12px; border-radius: 50%; background: #FF3B5C; box-shadow: 0 0 10px #FF3B5C; flex: none; animation: ldblink 1s steps(2, start) infinite; }
+  .light small { font-weight: 400; letter-spacing: .04em; text-transform: none; opacity: .85; }
+  .light.on { background: rgba(92,242,184,.07); border-color: rgba(92,242,184,.45); color: #C8FFE9; }
+  .light.on .ld { background: #5CF2B8; box-shadow: 0 0 10px #5CF2B8; animation: none; }
+  @keyframes ldblink { to { visibility: hidden; } }
+  /* paginación del historial */
+  .pager { display: flex; align-items: center; gap: 8px; margin-top: 10px; }
+  .pager span { flex: 1; text-align: center; font-size: 11px; color: var(--muted); letter-spacing: .04em; line-height: 1.4; }
+  .pager button { padding: 7px 10px; font-size: 11px; }
+  /* acceso */
+  #gate { display: none; position: fixed; inset: 0; z-index: 50; background: radial-gradient(circle at 50% 30%, #2A0E2C 0%, var(--bg) 70%);
+    align-items: center; justify-content: center; padding: 20px; }
+  #gate.show { display: flex; }
+  .gate-card { width: 100%; max-width: 380px; text-align: center; background: var(--panel); border: 1px solid var(--border);
+    border-radius: 16px; padding: 32px 24px; display: flex; flex-direction: column; gap: 14px; box-shadow: 0 0 40px rgba(255,79,184,.18); }
+  .gate-card h1 { margin: 0; font-size: 22px; letter-spacing: .3em; color: var(--pink); text-shadow: 0 0 14px rgba(255,79,184,.6); }
+  .gate-card p { margin: 0; font-size: 12px; color: var(--muted); letter-spacing: .08em; }
+  .gate-msg { font-size: 12px; color: var(--pastel); line-height: 1.7; min-height: 16px; overflow-wrap: anywhere; }
+  .gate-msg code { color: var(--text); background: var(--bg); padding: 2px 6px; border-radius: 5px; }
+  input[type="password"] { font-family: var(--mono); background: var(--bg); border: 1px solid var(--border); color: var(--text);
+    border-radius: 9px; padding: 10px 12px; font-size: 14px; width: 100%; min-width: 0; }
+  .chips { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; margin-top: 18px; font-size: 12px; color: var(--muted); align-items: center; }
+  .chips a { display: inline-block; padding: 4px 12px; border: 1px solid var(--pastel); border-radius: 6px; color: var(--pastel);
+    text-decoration: none; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; background: rgba(255,154,213,.08); }
+  .chips a:hover { background: rgba(255,154,213,.18); }
+  /*PANEL-CSS-END*/
+</style>
+</head>
+<body>
+
+<!--PANEL-HTML-BEGIN-->
+<div id="gate">
+  <div class="gate-card">
+    <h1>BLOODSITAX</h1>
+    <p>Panel de la meta de subs · solo para el equipo</p>
+    <button class="primary" id="btnLogin">ENTRAR CON GOOGLE</button>
+    <div class="gate-msg" id="gateMsg"></div>
+    <button class="ghost small" id="btnLogout2" hidden>Usar otra cuenta</button>
+  </div>
+</div>
+
+<div id="panel">
+
+  <div id="mainView" hidden>
+  <div class="layout">
+  <div class="col-main">
+
+    <div class="brand">
+      <div class="tabs"><a href="./">TIMER</a><a href="meta.html" class="on">META DE SUBS</a></div>
+      <span class="who"><span id="whoami"></span> <button class="ghost small" id="btnLogout">Salir</button></span>
+    </div>
+    <div class="ovlights">
+    <div class="light" id="lightTimer" title="Overlay del timer en OBS con clave y chat conectado"><span class="ld"></span>Overlay timer <small id="lightTimerTx">sin contar</small></div>
+    <div class="light" id="lightMeta" title="Overlay de la meta en OBS con clave (solo muestra; las subs las cuenta el timer)"><span class="ld"></span>Overlay meta <small id="lightMetaTx">sin contar</small></div>
+  </div>
+    <div class="banner" id="cfgBanner" hidden>Falta pegar la configuración de tu proyecto de Firebase en el archivo (busca <code>FIREBASE_CONFIG</code>). Mientras tanto, el panel solo muestra la vista previa.</div>
+
+    <div class="preview"><div class="pv-wrap" id="pvWrap"><div id="pvStage"></div></div></div>
+
+    <div class="block" style="margin-top:14px;">
+      <div class="big">
+        <div class="big-num" id="bigNum">0 <small>/ 100</small></div>
+        <div class="big-side">
+          <div class="bar"><i id="bigBar"></i></div>
+          <div class="pct" id="bigPct">0 %</div>
+          <div class="quick">
+            <button class="minus" data-q="-1" title="Restar 1">- 1</button>
+            <button class="primary" data-q="1" title="Sumar 1">+ 1</button>
+            <button data-q="5" title="Sumar 5">+ 5</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="title">Controles manuales <small>por si algo no se contó o se contó de más</small></div>
+      <div class="ops">
+        <div class="op">
+          <div class="ol">Sumar o restar<small>se suma o resta al conteo actual</small></div>
+          <input type="number" class="nospin" id="opAmount" min="1" step="1" value="1">
+          <div class="row"><button class="danger" id="btnSub">- RESTAR</button><button class="primary" id="btnAdd">+ SUMAR</button></div>
+        </div>
+        <div class="op">
+          <div class="ol">Número fijo<small>pone el conteo exacto, por ejemplo tu total de antes</small></div>
+          <input type="number" class="nospin" id="opSet" min="0" step="1" placeholder="0">
+          <div class="row"><button class="primary" id="btnSet">PONER NÚMERO</button></div>
+        </div>
+        <div class="op">
+          <div class="ol">Meta total<small>la calabaza se vuelve a llenar según la meta nueva</small></div>
+          <input type="number" class="nospin" id="opGoal" min="1" step="1" placeholder="100">
+          <div class="row"><button class="primary" id="btnGoal">CAMBIAR META</button></div>
+        </div>
+        <div class="op reset">
+          <div class="ol">Reiniciar<small>deja el conteo en 0; la meta no cambia</small></div>
+          <div class="row" style="flex:1; align-items:flex-end;"><button class="danger" id="btnReset">REINICIAR A 0</button></div>
+        </div>
+      </div>
+      <div class="flash" id="opFlash"></div>
+    </div>
+
+    <div class="block">
+      <div class="title">Probar en OBS <small>solo animación, no cambia el conteo</small></div>
+      <div class="row"><button id="btnTestBounce">PROBAR REBOTE</button><button id="btnTestComplete">PROBAR META COMPLETA</button></div>
+    </div>
+
+    <details class="block" id="connBlock">
+      <summary class="title">Conexión <small id="connSummary"></small><span class="chev">&rsaquo;</span></summary>
+      <div class="sublabel">Quién está contando ahora</div>
+      <div class="conn-list" id="connList"></div>
+      <p class="hint">La meta ya no escucha el chat: las subs las cuenta el <b>timer</b> (su overlay en OBS y sus paneles) y las suma aquí, 1 por sub, sin multiplicador. Esta lista muestra quién tiene abierta la meta.</p>
+    </details>
+
+    <details class="block" id="obsBlock" open>
+      <summary class="title">Link para OBS <small>overlay de la meta, fondo transparente</small><span class="chev">&rsaquo;</span></summary>
+      <div class="sublabel">Clave del overlay (la misma que usa el timer)</div>
+      <div class="row">
+        <input type="password" id="ovKey" placeholder="Clave del overlay" autocomplete="off">
+        <button class="fit primary" id="btnCopyObs">COPIAR LINK META CON CLAVE</button>
+        <button class="fit ghost" id="btnCopyView">Sin clave</button>
+      </div>
+      <div class="flash" id="connFlash"></div>
+      <p class="hint">Este link es <b>solo de la meta de subs</b>. El del timer se copia desde la pestaña TIMER.
+        Con clave: la calabaza muestra el conteo <b>y cuenta</b> las subs aunque no haya ningún panel abierto. Sin clave: solo muestra.
+        No muestres el link con clave en pantalla.</p>
+    </details>
+
+    <details class="block" id="styleBlock">
+      <summary class="title">Estilo de la calabaza <small>colores, texto, posición y efectos</small><span class="chev">&rsaquo;</span></summary>
+      <div id="styleForm"></div>
+      <div class="row" style="margin-top:6px;">
+        <button class="fit ghost" id="btnStyleReset">Restablecer estilo</button>
+        <button class="fit" id="btnDownload">DESCARGAR OVERLAY</button>
+      </div>
+      <p class="hint">Los cambios se ven en vivo en OBS. "Descargar overlay" genera un HTML solo con la calabaza y el estilo actual fijo, sin el panel. El conteo sigue saliendo de Firebase; para que también cuente, ábrelo con #k=clave al final.</p>
+      <div class="flash" id="styleFlash"></div>
+    </details>
+
+    <div class="block">
+      <div class="title">Respaldo</div>
+      <div class="row"><button class="fit" id="btnExport">EXPORTAR RESPALDO (JSON)</button></div>
+      <p class="hint">Descarga el conteo, la meta, el estilo y el historial completo. Útil antes de un evento grande.</p>
+    </div>
+
+  </div>
+
+  <aside class="col-side">
+    <div class="block hist-card">
+      <div class="block-head">
+        <div class="title">Historial</div>
+      </div>
+      <div class="legend" style="margin-bottom:12px;">
+        <span><i style="background:var(--ok)"></i>Automático</span>
+        <span><i style="background:var(--anon)"></i>Anónimo</span>
+        <span><i style="background:var(--manual)"></i>Manual</span>
+        <span><i style="background:var(--warn)"></i>Revisar</span>
+        <span><i style="background:var(--info)"></i>Aviso</span>
+      </div>
+      <div class="hist" id="hist"></div>
+      <div class="pager"><button class="ghost" id="histNewer">&lsaquo; Más recientes</button><span id="histInfo"></span><button class="ghost" id="histOlder">Más antiguos &rsaquo;</button></div>
+      <div class="hist-foot">
+        <input type="text" id="myName" placeholder="Tu nombre (sale en lo manual)">
+        <button class="ghost small danger" id="btnClearHist">Borrar</button>
+      </div>
+    </div>
+  </aside>
+  </div>
+  <div class="chips">Overlays para OBS:
+    <a href="./?display" target="_blank" id="chipTimer">timer</a>
+    <a href="meta.html?display" target="_blank" id="chipMeta">meta de subs</a>
+    · fondo transparente
+  </div>
+  </div>
+</div>
+<!--PANEL-HTML-END-->
+
+<div id="widget"></div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import {
+    getDatabase, ref, onValue, set, update, get, push, runTransaction, query, limitToLast, onDisconnect
+  } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+  import {
+    getAuth, onAuthStateChanged, signInWithPopup, signInWithRedirect, GoogleAuthProvider,
+    signInWithEmailAndPassword, signOut
+  } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+  /* ================================================================
+     CONFIG DE FIREBASE: la MISMA que en index.html (el timer).
+     Configuración del proyecto > General > Tus apps > App web > Configuración del SDK.
+  ================================================================ */
+  const FIREBASE_CONFIG = {
+    apiKey: "AIzaSyD7YONLemU9lJf8OKhc5FWtr34TuRoj1LA",
+    authDomain: "extensible-bloody.firebaseapp.com",
+    databaseURL: "https://extensible-bloody-default-rtdb.firebaseio.com",
+    projectId: "extensible-bloody",
+    storageBucket: "extensible-bloody.firebasestorage.app",
+    messagingSenderId: "883479848870",
+    appId: "1:883479848870:web:fc01f0f9e7d8e657ba5167"
+  };
+  // misma cuenta del overlay que el timer; la contraseña va solo en el link de OBS (#k=)
+  const COUNTER_EMAIL = "overlay@bloodsitax.app";
+  /* ================================================================ */
+
+  const TW_CHANNEL = "bloodsitax";
+
+  const BAKED = window.__OVERLAY || null;     // overlay descargado: estilo fijo
+  const TEST = window.__TEST || null;         // solo para pruebas automáticas
+  const params = new URLSearchParams(location.search);
+  const DISPLAY = !!BAKED || !!window.__OVERLAY_ONLY || params.has("display");
+  const CFG = (TEST && TEST.config) || FIREBASE_CONFIG;
+  const CONFIGURED = /^https:\/\//.test(CFG.databaseURL || "") && !/PEGA_AQUI/.test(CFG.apiKey || "");
+  const BULK_WAIT = (TEST && TEST.bulkWait) || 60000;   // espera antes de revisar un regalo masivo
+  const SWEEP_MS = (TEST && TEST.sweepMs) || 15000;
+
+  const $ = (id) => document.getElementById(id);
+  const lsGet = (k) => { try { return localStorage.getItem(k); } catch (e) { return null; } };
+  const lsSet = (k, v) => { try { localStorage.setItem(k, v); } catch (e) {} };
+  const lsDel = (k) => { try { localStorage.removeItem(k); } catch (e) {} };
+  const num = (v, d = 0) => { const n = Number(v); return isFinite(n) ? n : d; };
+  const esc = (s) => String(s == null ? "" : s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+  const safeKey = (k) => String(k).replace(/[^A-Za-z0-9_-]/g, "_").slice(0, 120);
+  const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+  function randId(n) {
+    const abc = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789";
+    const a = new Uint32Array(n); crypto.getRandomValues(a);
+    return Array.from(a, (x) => abc[x % abc.length]).join("");
+  }
+
+  const INSTANCE = randId(12);
+  let myName = DISPLAY ? "" : (lsGet("bs_subs_name") || "");
+  const whereLabel = () => DISPLAY ? "Overlay OBS" : ("Panel" + (myName ? " · " + myName : ""));
+
+  if (DISPLAY) {
+    document.documentElement.classList.add("display");
+    document.body.classList.add("display");
+    const p = $("panel"); if (p) p.remove();
+  }
+
+  // ganchos que el panel reemplaza; en el overlay no hacen nada
+  const hooks = { count() {}, style() {}, presence() {}, irc() {} };
+
+  /* ================================================================
+     CALABAZA (copia fiel del widget premium)
+  ================================================================ */
+  const DEFAULT_STYLE = {
+    "goalTitle": "META DE SUBS",
+    "backop": 4,
+    "fillcolor1": "#ff9f4a",
+    "fillcolor2": "#ffbb7a",
+    "glowcolb": "#ff7a1a",
+    "glowcolor": "#ff7a1a",
+    "textpos": "bottom",
+    "fontName": "Josefin Slab",
+    "titleFontSize": 22,
+    "fontSize": 20,
+    "titleFontColor": "#fffefe",
+    "fontColor": "#fffefe",
+    "fontWeight": "700",
+    "titleFontWeight": "700",
+    "particles": true,
+    "fillglow": false,
+    "textglow": true,
+    "circleend": true,
+    "petalsVideo": "https://cdn.streamelements.com/uploads/01khh6rv3t3zgxxzdq01msz05j.webm",
+    "completeVideo": "https://cdn.streamelements.com/uploads/01khh6rv3t3zgxxzdq01msz05j.webm",
+    "waterEffectVideo": "https://cdn.streamelements.com/uploads/01khhcmtdgn02k0ejxbpszgcet.webm",
+    "waterEffect": true,
+    "widgetScale": 1.5,
+    "textAlign": "left",
+    "waveSpeed": 2.5,
+    "freehandX": 20,
+    "freehandY": 200,
+    "mirror": false,
+    "widgetPosX": 105,
+    "widgetPosY": 20,
+    "rainbowGlow": false,
+    "rainbowTextGlow": false,
+    "rainbowFill": false,
+    "huerotat": 34,
+    "bordeColor": "#ff5e00",
+    "bordeGlow": "#ff7a1a",
+    "faceTint": "block",
+    "faceLiquidColor": "#ffd23f",
+    "stemBorderColor": "#2fb344",
+    "stemBorderGlow": "#3ddc55",
+    "stemLiquidColor": "#7bd36b",
+    "candle": true,
+    "candleColor": "#ffb347",
+    "progressiveGlow": true,
+    "bounce": true,
+    "completeFx": true
+  };
+  let S = { ...DEFAULT_STYLE };
+  const WCSS = "* {\n  margin: 0;\n  padding: 0;\n  overflow: visible;\n}\n\n.goal-widget {\n  --gk: 1;\n  transform: scale({widgetScale});\n  transform-origin: top left;\n  position: absolute;\n  width: 220px;\n  height: 180px;\n  top: {widgetPosY}px;\n  left: {widgetPosX}px;\n}\n\n.goal-widget.mirrored {\n  transform: scale({widgetScale}) scaleX(-1);\n  transform-origin: top right;\n}\n\n.complete-video {\n  zoom: 25%;\n    filter: hue-rotate({huerotat}0deg)drop-shadow(0 0 4px {glowcolb}) drop-shadow(0 0 22px {glowcolb});\n    position: absolute;\n    width: 100%;\n    height: 100%;\n   top: -430px;\n    left: -50px;\n    z-index: -10;\n  object-fit: contain;\n  pointer-events: none;\n}\n\n.petals-video {\n   zoom: 63%;\n    filter: hue-rotate({huerotat}0deg);\n    position: absolute;\n    width: 200px;\n    left: 51px;\n    bottom: 96px;\n    z-index: -10;\n  object-fit: cover;\n  height: 0%;\n  display: none;\n  transition: height 0.5s ease-out;\n  pointer-events: none;\n}\n.water-effect-video {\n  position: absolute;\n  width: 450px;\n  height: 0%;\n  bottom:-10px;\n  left: 0px;\n  transform-origin: bottom;\n  padding-bottom: 15px;\n  clip-path: url(#wave-clip);\n  object-fit: cover;\n  z-index: 5;\n  display: none;\n  pointer-events: none;\n  opacity: 1;\n  mix-blend-mode: screen;\n}\n\n\n.liquid-container {\n  filter: drop-shadow(0 0 3px {glowcolb}) drop-shadow(0 0 7px {glowcolb}) drop-shadow(0 0 19px {glowcolb});\n  position: absolute;\n  width: 100%;\n  height: 100%;\n}\n\n.liquid-container.rainbow-glow {\n  animation: rainbow-glow-shift 8s infinite linear;\n}\n\n@keyframes rainbow-glow-shift {\n  0% {\n    filter: drop-shadow(0 0 3px #ffb3d9) drop-shadow(0 0 7px #ffb3d9) drop-shadow(0 0 19px #ffb3d9);\n  }\n  16.66% {\n    filter: drop-shadow(0 0 3px #ffd4b3) drop-shadow(0 0 7px #ffd4b3) drop-shadow(0 0 19px #ffd4b3);\n  }\n  33.33% {\n    filter: drop-shadow(0 0 3px #ff9a9a) drop-shadow(0 0 7px #ff9a9a) drop-shadow(0 0 19px #ff8a8a);\n  }\n  50% {\n    filter: drop-shadow(0 0 3px #b3ffd4) drop-shadow(0 0 7px #b3ffd4) drop-shadow(0 0 19px #b3ffd4);\n  }\n  66.66% {\n    filter: drop-shadow(0 0 3px #b3d9ff) drop-shadow(0 0 7px #b3d9ff) drop-shadow(0 0 19px #b3d9ff);\n  }\n  83.33% {\n    filter: drop-shadow(0 0 3px #d4b3ff) drop-shadow(0 0 7px #d4b3ff) drop-shadow(0 0 19px #d4b3ff);\n  }\n  100% {\n    filter: drop-shadow(0 0 3px #ffb3d9) drop-shadow(0 0 7px #ffb3d9) drop-shadow(0 0 19px #ffb3d9);\n  }\n}\n.object-image {\n    zoom: 80%;\n    position: absolute;\n    width: 200px;\n    height: 195px;\n    bottom: -4px;\n    left: 35px;\n    z-index: 3;\n    opacity: 1;\n    fill: {bordeColor};\n    filter: drop-shadow(0 0 calc(2px * var(--gk)) {bordeGlow}) drop-shadow(0 0 calc(6px * var(--gk)) {bordeGlow}) drop-shadow(0 0 calc(14px * var(--gk)) {bordeGlow});\n}\n\n.bg-object {\n    zoom: 80%;\n    position: absolute;\n    width: 200px;\n    height: 195px;\n    bottom: -4px;\n    left: 35px;\n    z-index: -30;\n}\n\n.bg-object svg {\n    display: block;\n    width: 100%;\n    height: 100%;\n}\n.clip-area {\n    zoom: 80%;\n    position: absolute;\n    width: 200px;\n    height: 195px;\n    bottom: -4px;\n    left: 35px;\n    clip-path: url(#object-clip);\n}\n\n/* Liquido dentro de ojos, nariz y boca */\n.clip-area.face-area {\n    clip-path: url(#face-clip);\n    display: {faceTint};\n}\n\n.face-area .water-fill,\n.face-area .water-fill-2 {\n    background: {faceLiquidColor};\n    opacity: 0.85;\n}\n\n.face-area .stroke-1,\n.face-area .stroke-2 {\n    display: none;\n}\n\n/* Tallo: borde y liquido en verde */\n.object-image.stem-border {\n    fill: {stemBorderColor};\n    filter: drop-shadow(0 0 calc(2px * var(--gk)) {stemBorderGlow}) drop-shadow(0 0 calc(6px * var(--gk)) {stemBorderGlow}) drop-shadow(0 0 calc(14px * var(--gk)) {stemBorderGlow});\n}\n\n.clip-area.stem-area {\n    clip-path: url(#stem-clip);\n}\n\n.stem-area .water-fill,\n.stem-area .water-fill-2 {\n    background: {stemLiquidColor};\n    opacity: 0.85;\n}\n\n.stem-area .stroke-1,\n.stem-area .stroke-2 {\n    display: none;\n}\n\n.water-fill {\n   background: linear-gradient(0deg, {fillcolor1} 0%, {fillcolor2} 100%);\n    opacity: 0.7;\n    filter: saturate(2.5);\n    position: absolute;\n    width: 450px;\n    bottom: 0px;\n    left: 0px;\n    transform-origin: bottom;\n    padding-bottom: 15px;\n    clip-path: url(#wave-clip);\n  animation: wave-move {waveSpeed}s infinite linear;\n}\n\n.water-fill.rainbow-fill {\n  animation: wave-move {waveSpeed}s infinite linear, rainbow-fill-shift 8s infinite linear;\n}\n\n@keyframes rainbow-fill-shift {\n  0% {\n    background: linear-gradient(0deg, #ffb3d9 0%, #ffd9ec 100%);\n  }\n  16.66% {\n    background: linear-gradient(0deg, #ffd4b3 0%, #ffe8d9 100%);\n  }\n  33.33% {\n   background: linear-gradient(0deg, #ff9a9a 0%, #ff8a8a 100%);\n  }\n  50% {\n    background: linear-gradient(0deg, #b3ffd4 0%, #d9ffe8 100%);\n  }\n  66.66% {\n    background: linear-gradient(0deg, #b3d9ff 0%, #d9ecff 100%);\n  }\n  83.33% {\n    background: linear-gradient(0deg, #d4b3ff 0%, #e8d9ff 100%);\n  }\n  100% {\n    background: linear-gradient(0deg, #ffb3d9 0%, #ffd9ec 100%);\n  }\n}\n\n.water-fill-2 {\n  background: linear-gradient(0deg, {fillcolor1} 0%, {fillcolor2} 100%);\n    position: absolute;\n    width: 450px;\n    bottom: 3px;\n    left: 0px;\n    transform-origin: bottom;\n    padding-bottom: 15px;\n  clip-path: url(#wave-clip);\n  animation: wave-move {waveSpeed}s infinite reverse linear;\n  transform: translateX(-4%);\n   opacity: 0.7;\n}\n\n.water-fill-2.rainbow-fill {\n  animation: wave-move {waveSpeed}s infinite reverse linear, rainbow-fill-shift 8s infinite linear;\n}\n\n.stroke-1 {\nbackground: white;\n    opacity: 0.4;\n    position: absolute;\n    width: 450px;\n    bottom: -5px;\n    left: -1px;\n    transform-origin: bottom;\n    padding-bottom: 15px;\n  clip-path: url(#wave-st);\n  animation: wave-move {waveSpeed}s infinite linear;\n}\n\n.stroke-2 {\n    background: white;\n    position: absolute;\n    width: 450px;\n    bottom: -2px;\n    left: 1px;\n    transform-origin: bottom;\n    padding-bottom: 15px;\n    clip-path: url(#wave-st);\n  animation: wave-move {waveSpeed}s infinite reverse linear;\n  transform: translateX(-2%);\n  opacity: 0.4;\n}\n\n.goal-title {\n  position: relative;\n  z-index: 4;\n  font-size: {titleFontSize}px;\n  font-family: '{fontName}';\n  color: {titleFontColor};\n  margin-bottom: 0.1em;\n  font-weight: {titleFontWeight};\n  letter-spacing: 0px;\n}\n\n.goal-amount {\n  margin: 0;\n  position: relative;\n  width: 100%;\n  display: block;\n  font-weight: {fontWeight};\n}\n.goal-text {\n  transform: scale({widgetScale});\n  transform-origin: top left;\n  position: absolute;\n  width: 220px;\n  height: 180px;\n  top: {widgetPosY}px;\n  left: calc({widgetPosX}px - 5px);\n}\n\n.text-right {\n  font-family: '{fontName}';\n  color: {fontColor};\n  position: absolute;\n  left: 200px;\n  top: 50%;\n  transform: translateY(-50%);\n  z-index: 3;\n  width: 300%;\n  text-align: left;\n  font-size: {fontSize}px;\n  visibility: hidden;\n}\n\n.text-bottom {\n  font-family: '{fontName}';\n  color: {fontColor};\n  position: absolute;\n  left: 0px;\n  top: 182px;\n  transform: translateX(-25%);\n  z-index: 3;\n  width: 200%;\n  text-align: center;\n  font-size: {fontSize}px;\n  visibility: hidden;\n}\n\n.text-freehand {\n  font-family: '{fontName}';\n  color: {fontColor};\n  position: absolute;\n  left: {freehandX}px;\n  top: {freehandY}px;\n  z-index: 3;\n  width: 200%;\n  text-align: {textAlign};\n  font-size: {fontSize}px;\n  visibility: hidden;\n}\n\n\n@keyframes wave-move {\n  from {\n    transform: translateX(-24%);\n  }\n  to {\n    transform: translateX(-46%);\n  }\n}\n\n.swing {\n  transform-origin: 50% 0;\n  animation: swing 1.5s ease-in-out infinite alternate;\n}\n@keyframes swing {\n  from {\n  transform: rotate(-5deg);\n  }\n  to {\n  transform: rotate(5deg);\n  }\n}\n\n.glow-shadow {\n  animation: fade-in 1s ease forwards;\n}\n\n@keyframes fade-in {\n  from {\n    opacity: 0;\n  }\n  to {\n    opacity: 0.6;\n  }\n}\n\n.text-glow {\n  filter: drop-shadow(0 0 10px {glowcolor});\n}\n\n.text-glow.rainbow-text-glow {\n  animation: rainbow-text-glow-shift 8s infinite linear;\n}\n\n@keyframes rainbow-text-glow-shift {\n  0% {\n    filter: drop-shadow(0 0 10px #ffb3d9);\n  }\n  16.66% {\n    filter: drop-shadow(0 0 10px #ffd4b3);\n  }\n  33.33% {\n    filter: drop-shadow(0 0 10px #ff9f9f);\n  }\n  50% {\n    filter: drop-shadow(0 0 10px #b3ffd4);\n  }\n  66.66% {\n    filter: drop-shadow(0 0 10px #b3d9ff);\n  }\n  83.33% {\n    filter: drop-shadow(0 0 10px #d4b3ff);\n  }\n  100% {\n    filter: drop-shadow(0 0 10px #ffb3d9);\n  }\n}\n\n\n/* ===================== PREMIUM ===================== */\n\n/* Contenedor que rebota con cada sub */\n.pumpkin-body {\n  position: absolute;\n  inset: 0;\n  transform-origin: 50% 100%;\n}\n\n.pumpkin-body.bounce {\n  animation: pumpkin-bounce 0.55s cubic-bezier(.3,1.6,.5,1);\n}\n\n@keyframes pumpkin-bounce {\n  0%   { transform: scale(1, 1); }\n  25%  { transform: scale(1.08, 0.9); }\n  55%  { transform: scale(0.95, 1.07); }\n  80%  { transform: scale(1.02, 0.98); }\n  100% { transform: scale(1, 1); }\n}\n\n/* Luz de vela dentro de la calabaza */\n.candle-glow {\n  position: absolute;\n  left: 30px;\n  top: 40px;\n  width: 140px;\n  height: 140px;\n  border-radius: 50%;\n  background: radial-gradient(circle, {candleColor} 0%, transparent 70%);\n  opacity: 0;\n  pointer-events: none;\n}\n\n.candle-on .candle-glow {\n  animation: candle-flicker 2.3s infinite steps(1, end);\n}\n\n.candle-on .face-area {\n  animation: face-flicker 2.3s infinite steps(1, end);\n}\n\n@keyframes candle-flicker {\n  0%   { opacity: calc(var(--cg) * 0.85); }\n  12%  { opacity: calc(var(--cg) * 1); }\n  20%  { opacity: calc(var(--cg) * 0.7); }\n  31%  { opacity: calc(var(--cg) * 0.95); }\n  47%  { opacity: calc(var(--cg) * 0.8); }\n  58%  { opacity: calc(var(--cg) * 1); }\n  70%  { opacity: calc(var(--cg) * 0.75); }\n  83%  { opacity: calc(var(--cg) * 0.9); }\n  100% { opacity: calc(var(--cg) * 0.85); }\n}\n\n@keyframes face-flicker {\n  0%   { filter: brightness(1); }\n  12%  { filter: brightness(1.15); }\n  20%  { filter: brightness(0.9); }\n  31%  { filter: brightness(1.08); }\n  47%  { filter: brightness(0.95); }\n  58%  { filter: brightness(1.18); }\n  70%  { filter: brightness(0.92); }\n  83%  { filter: brightness(1.05); }\n  100% { filter: brightness(1); }\n}\n\n/* Lienzo de efectos de meta completa (murcielagos y destellos) */\n.fx-sky {\n  zoom: 80%;\n  position: absolute;\n  left: -115px;\n  bottom: -4px;\n  width: 500px;\n  height: 395px;\n  z-index: 4;\n  pointer-events: none;\n}\n";
+  const WHTML = "\n  <div class=\"goal-widget\">\n    <div class=\"pumpkin-body\">\n\n      <svg class=\"object-image\" viewBox=\"0 0 764 743\" preserveAspectRatio=\"none\">\n        <path fill-rule=\"evenodd\"\n          d=\"M368.0,736.3C341.6,733.7 319.4,725.6 300.8,711.8L292.8,705.9L285.2,708.4C268.5,714.0 256.0,715.1 239.0,712.6C208.0,707.9 182.1,695.1 158.0,672.6C152.0,666.9 149.4,665.2 146.4,664.7C126.6,661.5 98.6,645.4 78.7,625.7C52.6,599.9 34.6,569.9 21.1,529.4C1.7,471.1 1.4,390.6 20.5,330.0C43.1,258.5 84.8,206.1 141.7,177.6C165.0,166.0 189.9,160.0 215.0,160.0L227.1,160.0L230.1,156.5C236.3,149.4 254.7,142.4 273.8,139.9C286.7,138.2 311.2,140.1 314.4,143.1C314.9,143.6 314.2,145.4 312.6,147.4L310.0,150.9L296.7,150.3C278.3,149.5 262.3,152.2 246.9,158.8L242.5,160.7L247.0,161.9C249.5,162.6 254.0,163.9 257.0,165.0C263.9,167.4 273.9,169.7 281.0,170.5C284.0,170.8 288.0,171.5 289.8,172.1C292.6,173.0 293.0,173.6 293.0,176.6L293.0,180.0L302.3,180.0C310.9,180.0 312.0,180.2 316.3,183.0C318.9,184.6 322.9,187.7 325.2,189.7C334.4,197.9 332.4,197.6 343.8,193.0C358.3,187.2 366.2,185.6 381.5,185.6C396.5,185.6 410.3,187.8 419.4,191.6C431.0,196.4 430.1,196.5 438.2,190.1C448.4,182.0 452.6,180.0 460.0,180.0C465.8,180.0 466.0,179.9 466.0,177.5C466.0,174.2 467.6,173.6 488.0,169.4C497.1,167.5 508.3,164.7 512.9,163.1L521.3,160.3L513.9,157.7C503.0,153.8 495.8,152.2 483.7,150.8C473.3,149.6 467.9,149.9 451.5,152.6C448.9,153.0 448.1,152.5 445.6,149.0C444.0,146.7 443.1,144.5 443.6,144.0C445.0,142.8 460.5,140.0 469.9,139.4C492.2,137.9 521.0,145.5 532.3,155.9L536.7,160.0L549.1,160.0C581.0,160.0 610.5,169.1 641.9,188.5C692.4,219.7 731.8,279.2 749.0,350.0C762.2,404.4 760.4,473.4 744.3,525.0C726.7,581.8 695.2,625.4 653.5,650.5C643.8,656.3 634.6,660.2 622.8,663.5C614.8,665.7 613.2,666.5 607.4,671.7C594.7,683.2 580.6,693.0 568.5,699.0C554.2,706.0 543.6,709.4 528.2,712.1C509.4,715.3 497.8,714.5 480.5,708.9L471.2,706.0L464.6,710.9C445.6,725.3 425.4,733.1 399.5,736.0C391.0,736.9 375.7,737.1 368.0,736.3ZM407.6,721.0C451.3,713.1 483.9,685.5 516.0,629.1C519.6,622.9 523.1,617.5 523.8,617.2C528.8,615.3 526.4,624.6 516.4,645.7C507.1,665.5 496.0,682.1 484.7,693.0C482.1,695.5 480.0,697.8 480.0,698.1C480.0,699.7 500.4,701.3 513.1,700.7C532.3,699.9 549.1,694.9 568.0,684.5C596.2,669.0 625.2,636.5 643.5,600.0C671.6,544.0 683.6,486.2 682.9,411.0C682.6,386.7 683.3,381.8 685.7,389.1C688.8,398.7 690.5,419.4 690.5,448.5C690.5,477.9 689.8,487.0 685.9,510.5C677.8,559.6 656.6,611.4 630.9,645.1L624.8,653.1L631.9,649.6C661.4,634.7 688.7,608.7 706.5,578.5C726.0,545.5 736.3,515.3 742.1,473.5C745.8,447.6 745.2,402.8 740.9,376.5C729.8,308.4 694.2,244.1 648.3,209.2C628.2,193.9 604.6,182.2 582.5,176.6C566.7,172.6 538.6,169.9 528.4,171.5L523.5,172.2L533.2,175.1C586.0,190.8 630.4,231.7 657.0,289.0C665.6,307.5 671.2,325.9 667.9,324.8C667.3,324.6 663.7,318.4 659.8,311.0C631.4,256.6 596.6,218.9 556.3,198.6C547.3,194.2 537.9,190.8 524.5,187.4C514.9,185.0 511.6,184.7 498.5,184.7C486.3,184.7 482.0,185.1 475.7,186.8C466.8,189.3 454.3,195.5 448.6,200.4L444.6,203.8L453.5,213.2C458.3,218.3 464.3,225.1 466.6,228.4C471.2,234.4 480.0,251.2 480.0,253.6C480.0,256.9 476.0,254.7 471.9,249.2C465.0,240.0 450.0,225.7 440.4,219.2C420.3,205.7 406.7,201.0 386.0,200.3C373.9,199.9 371.5,200.1 362.5,202.4C349.0,205.9 329.3,215.7 316.5,225.3C307.1,232.3 299.2,240.2 289.9,252.0C287.7,254.7 285.5,257.0 284.8,257.0C281.7,257.0 288.0,241.8 295.9,230.1C300.6,223.3 310.8,212.5 316.8,208.2L321.1,205.2L317.8,202.1C304.7,189.6 284.3,183.1 262.0,184.3C220.2,186.5 176.3,211.4 142.4,252.0C129.5,267.5 112.7,293.7 102.1,314.8C97.4,324.1 95.0,326.7 95.0,322.3C95.0,318.9 102.3,299.1 107.8,287.6C129.9,241.6 161.8,207.0 200.0,187.6C211.1,181.9 225.8,176.2 234.9,173.9C239.5,172.8 239.9,172.4 237.9,171.9C233.6,170.7 217.7,171.0 205.0,172.5C174.8,176.2 152.2,184.7 125.5,202.5C92.6,224.4 64.6,259.0 45.8,301.3C35.0,325.4 25.9,356.8 22.5,381.0C15.9,429.1 19.7,482.1 32.7,523.2C41.9,552.4 57.5,582.0 75.1,603.5C89.3,621.0 112.0,639.4 131.1,649.0L138.8,652.9L132.2,644.0C93.0,591.8 71.0,514.9 73.4,439.0C74.2,410.6 77.5,384.0 80.1,384.0C81.3,384.0 81.3,383.4 81.1,409.0C80.4,475.6 89.8,529.5 110.5,578.2C122.9,607.4 136.6,629.8 154.8,650.4C178.7,677.5 204.0,692.6 236.8,699.5C245.5,701.3 265.1,701.5 276.7,699.9L285.0,698.7L278.7,692.0C275.2,688.3 269.7,681.4 266.6,676.6C261.0,668.3 250.0,645.7 250.0,642.6C250.0,639.3 252.1,640.1 255.2,644.6C271.3,667.8 292.6,690.7 307.1,700.3C317.6,707.2 331.0,714.2 339.3,716.9C357.4,722.9 387.1,724.7 407.6,721.0ZM419.8,634.8C418.7,633.9 417.3,628.7 415.6,619.0C414.1,611.0 412.7,603.7 412.4,602.7C411.9,601.0 411.0,600.9 401.2,601.7C387.8,602.7 374.3,602.7 361.9,601.7L352.3,601.0L349.1,616.7C347.4,625.4 345.4,633.1 344.6,633.8C343.4,635.0 341.8,635.1 334.8,634.1C319.5,631.9 299.9,626.8 297.5,624.4C296.3,623.1 296.0,619.7 296.0,606.2L296.0,589.5L281.7,585.6C273.9,583.5 266.6,581.6 265.5,581.3C263.9,581.0 261.6,583.2 254.6,591.9C249.7,598.0 245.0,603.0 244.0,603.0C242.0,603.0 223.9,590.8 215.0,583.5C181.5,555.7 159.9,521.5 149.0,478.8C144.7,462.3 146.8,461.7 165.4,474.3C168.6,476.4 176.5,480.7 182.9,483.7C189.3,486.6 196.5,490.1 199.0,491.3L203.5,493.5L203.3,510.6L203.1,527.7L218.5,533.9C226.9,537.2 234.3,540.0 234.7,540.0C235.2,540.0 236.9,533.0 238.5,524.4C240.2,515.7 242.0,508.0 242.6,507.2C243.5,506.0 244.8,506.1 252.6,508.3C263.9,511.5 291.8,517.7 299.0,518.6C302.0,518.9 305.5,519.9 306.8,520.6C309.5,522.3 309.6,525.2 307.5,542.5C306.7,549.0 306.2,554.5 306.3,554.7C306.9,555.3 326.1,557.9 334.0,558.5L342.5,559.2L342.7,543.4C342.9,531.2 343.3,527.3 344.4,526.1C345.7,524.9 351.8,524.7 382.5,524.7C409.3,524.7 419.4,525.0 420.3,525.9C421.1,526.7 421.6,532.5 421.8,543.2L422.2,559.3L431.6,558.6C440.4,558.0 456.8,555.6 457.6,554.7C457.8,554.5 457.3,547.3 456.4,538.6C455.1,525.3 455.0,522.5 456.2,521.4C456.9,520.6 465.0,518.6 474.0,516.9C483.1,515.2 496.6,512.2 504.0,510.3C522.2,505.5 522.6,505.4 523.8,507.7C524.4,508.7 525.9,516.3 527.1,524.5C528.3,532.8 529.4,539.6 529.5,539.8C530.2,540.8 561.3,527.6 561.8,526.2C562.0,525.6 561.4,520.2 560.6,514.1C558.7,500.6 558.6,494.6 560.2,493.2C560.9,492.7 565.5,490.6 570.5,488.5C582.1,483.7 598.9,475.1 606.5,470.1C616.9,463.1 618.4,464.7 615.2,479.0C609.0,506.4 596.6,531.7 578.6,554.0C571.2,563.2 557.8,576.5 548.4,584.2C539.9,591.1 522.2,603.0 520.4,603.0C519.7,603.0 517.6,601.5 515.8,599.8C511.1,595.1 495.8,582.5 495.1,582.6C494.8,582.7 490.9,583.7 486.5,584.9L478.5,587.1L478.5,604.3L478.5,621.5L475.0,623.2C470.0,625.6 451.0,630.6 435.2,633.5C419.5,636.4 421.7,636.3 419.8,634.8ZM342.7,611.8C344.5,603.5 346.3,596.3 346.8,595.8C347.3,595.3 360.0,594.8 375.1,594.6C390.2,594.4 405.5,593.9 409.1,593.5C414.3,592.9 415.9,593.1 417.1,594.3C418.0,595.1 419.8,601.9 421.4,609.6C425.2,629.1 424.2,627.3 430.9,626.6C437.4,625.9 460.3,620.7 467.1,618.5L471.8,616.9L471.3,600.1L470.8,583.2L473.1,581.7C475.8,580.0 493.6,575.0 496.9,575.0C498.2,575.0 501.4,577.1 504.3,579.8C507.2,582.4 512.1,586.7 515.2,589.4L520.9,594.1L524.7,592.1C531.5,588.7 551.2,572.6 560.5,562.9C575.6,547.2 586.4,531.7 595.5,512.8C600.8,501.7 608.0,482.0 608.0,478.5C608.0,476.8 607.8,476.8 606.2,478.3C604.2,480.1 580.3,492.2 572.1,495.5L566.5,497.8L566.6,502.7C566.7,505.3 567.2,512.0 567.7,517.5C568.3,523.0 568.3,528.5 567.8,529.8C566.8,532.7 545.9,542.9 534.5,546.0L526.6,548.2L524.9,546.1C523.4,544.2 519.0,524.3 519.0,519.3C519.0,514.4 518.4,514.1 512.0,516.1C503.9,518.6 475.7,524.8 468.6,525.6L462.7,526.3L463.4,532.4C465.2,549.7 465.3,557.5 463.7,558.8C457.2,564.2 418.7,568.4 415.9,563.9C415.4,563.2 415.0,557.3 415.0,551.0C415.0,544.7 414.7,537.9 414.4,536.0L413.8,532.5L381.9,532.5L350.0,532.5L350.0,547.7C350.0,566.1 350.1,566.0 339.6,566.0C331.7,566.0 312.8,563.7 305.6,561.9C298.5,560.1 298.5,560.0 300.3,542.7C301.2,534.3 301.6,527.2 301.2,526.9C300.8,526.6 296.7,525.7 292.0,525.0C287.3,524.3 275.6,521.8 265.9,519.4C256.2,517.0 248.1,515.0 247.8,515.0C247.5,515.0 247.0,517.1 246.6,519.7C245.1,530.8 240.8,546.0 238.9,547.0C237.5,547.8 234.8,547.3 228.3,545.1C216.2,541.1 203.2,535.4 199.2,532.3L195.8,529.8L196.4,519.1C196.8,513.3 197.3,506.2 197.6,503.5L198.1,498.5L185.3,492.5C178.3,489.2 169.0,484.4 164.7,481.8L156.9,477.1L157.5,480.3C160.2,492.6 169.6,515.6 177.6,528.9C188.1,546.6 204.4,565.5 219.4,577.4C230.1,586.0 241.4,594.0 242.6,594.0C243.1,594.0 245.5,591.4 248.0,588.2C256.2,577.7 260.1,574.0 262.9,574.0C264.3,574.0 273.1,576.1 282.5,578.6C294.6,581.9 300.0,583.9 301.4,585.4C303.0,587.3 303.2,589.0 302.9,603.5L302.5,619.4L307.3,620.8C314.0,622.7 334.0,626.8 337.0,626.9C339.4,627.0 339.6,626.5 342.7,611.8ZM355.6,487.1C347.4,486.6 344.5,486.1 343.8,485.0C343.1,483.9 347.9,473.2 361.4,445.7C377.8,412.3 380.2,407.9 382.1,408.2C383.7,408.4 386.0,411.9 391.4,422.5C405.7,450.4 421.0,483.3 420.5,485.0C420.1,486.3 418.3,486.9 412.3,487.4C403.8,488.1 372.4,487.9 355.6,487.1ZM396.1,480.0L410.9,480.0L405.0,467.8C401.8,461.0 395.4,447.7 390.7,438.1L382.2,420.7L376.4,432.1C368.3,448.4 354.0,479.0 354.0,480.3C354.0,481.0 358.3,481.1 367.7,480.7C375.2,480.3 388.0,480.0 396.1,480.0ZM314.5,444.4C312.0,443.9 266.8,439.7 236.5,437.0C180.7,432.2 169.5,430.9 168.0,429.4C166.4,427.8 166.9,426.8 180.3,401.5C183.8,394.9 195.8,371.9 207.0,350.5C243.5,280.4 243.5,280.5 245.9,280.5C247.4,280.5 248.7,281.6 250.0,284.0C252.8,289.1 323.8,432.7 326.1,437.9C328.6,443.5 327.5,445.1 321.1,444.9C318.6,444.8 315.6,444.6 314.5,444.4ZM437.5,444.1C437.1,443.4 437.1,441.8 437.4,440.4C438.8,434.9 515.7,281.3 517.5,280.7C518.4,280.3 519.9,280.5 520.6,281.1C521.3,281.7 527.4,292.8 534.0,305.7C540.7,318.6 552.2,340.7 559.7,354.8C567.1,369.0 575.9,385.7 579.2,392.0C582.5,398.3 587.9,408.5 591.1,414.6C597.1,425.8 597.9,428.3 595.9,429.5C594.0,430.7 562.8,434.0 490.5,440.5C469.1,442.4 448.5,444.3 444.9,444.6C440.3,445.1 438.1,444.9 437.5,444.1ZM282.1,365.6C262.5,326.3 246.2,294.1 245.9,294.1C245.5,294.0 243.5,297.7 241.3,302.2C237.0,311.1 218.9,345.5 193.6,392.7C185.0,408.8 178.0,422.4 178.0,422.8C178.0,423.8 182.7,424.3 255.0,431.1C284.4,433.8 308.9,436.2 309.5,436.4C310.1,436.7 312.1,436.9 314.1,436.9L317.6,437.0L282.1,365.6ZM483.5,433.5C566.4,425.7 586.5,423.8 586.7,423.6C587.0,423.3 580.7,411.5 564.8,382.0C551.4,357.2 534.2,324.3 525.6,307.2C522.0,300.0 518.8,294.0 518.5,294.0C518.0,294.0 447.0,435.7 447.0,436.7C447.0,437.0 449.4,437.0 452.2,436.6C455.1,436.3 469.2,434.9 483.5,433.5Z\"/>\n      </svg>\n      <svg class=\"object-image stem-border\" viewBox=\"0 0 764 743\" preserveAspectRatio=\"none\">\n        <path fill-rule=\"evenodd\"\n          d=\"M293.0,176.5C293.0,174.4 293.5,173.0 294.2,173.0C297.6,173.0 315.6,154.9 314.4,152.8C314.1,152.3 312.8,152.0 311.5,152.0L309.0,152.0L312.3,147.5C314.8,144.0 316.0,143.2 317.7,143.5C320.6,144.2 321.0,143.3 325.9,125.5C336.2,87.9 343.5,70.0 355.8,51.5C372.4,26.4 397.7,7.1 415.2,6.2C427.4,5.5 441.9,12.0 459.8,26.2C471.0,35.2 479.2,48.8 479.3,58.9C479.3,68.8 475.4,74.1 462.0,82.1C458.0,84.4 452.0,89.4 447.8,93.8C437.1,105.0 432.3,116.5 433.2,128.3C433.9,136.0 438.2,145.4 440.8,144.6C442.0,144.2 443.5,145.5 445.7,148.8C449.0,153.5 449.0,153.5 446.7,154.1C445.5,154.4 444.6,155.3 444.8,156.0C445.7,159.9 457.7,171.8 463.1,174.2C465.1,175.1 466.0,176.2 466.0,177.7C466.0,179.8 465.5,180.0 460.5,180.0C456.0,180.0 454.1,179.4 449.8,176.6C436.9,168.4 423.7,148.6 420.9,133.5C418.0,117.5 426.3,96.2 440.8,82.8C446.4,77.7 448.1,76.5 460.3,68.6C467.3,64.2 468.6,61.4 466.9,55.1C464.4,46.2 455.1,36.6 438.8,26.1C427.0,18.6 418.1,16.4 409.9,19.1C404.2,21.0 390.8,30.4 382.9,38.2C372.0,48.7 363.7,60.5 356.0,76.5C348.8,91.4 345.7,100.1 341.5,117.0C337.2,134.2 333.3,145.1 328.6,153.0C324.0,160.8 314.7,170.8 308.4,174.6L304.8,176.8L307.6,178.4C310.4,179.9 310.2,179.9 301.8,180.0L293.0,180.0L293.0,176.5Z\"/>\n      </svg>\n\n      <div class=\"liquid-container\">\n        <div class=\"clip-area\">\n\n          <svg width=\"680px\" height=\"485px\" viewBox=\"0 0 315 235\">\n            <clipPath id=\"wave-clip\">\n              <path transform=\"translate(15.2,0.5) scale(2.25)\"\n                d=\"M0,2.5c11.2,0,10.5,5.1,21.87,5.1s11.1-5.1,21.87-5.1,10.7,4.9,21.87,4.9,11.2-4.9,21.87-4.9,10.8,5.2,21.87,5.2,11.0-5.2,21.86-5.2,10.94,4.8,21.87,4.8,11.1-4.8,21.86-4.8,10.85,5.0,21.87,5.0,11.0-5.0,21.87-5.0,10.93,4.7,21.86,4.7,11.1-4.7,21.87-4.7,10.94,5.3,21.87,5.3,10.8-5.3,21.88-5.3V98.84H0Z\"/>\n            </clipPath>\n          </svg>\n\n          <svg width=\"680px\" height=\"485px\" viewBox=\"0 0 315 235\">\n            <clipPath id=\"wave-st\">\n              <path transform=\"translate(15.2,0.5) scale(2.25)\"\n                d=\"M284.28,5.6c-5.57,0-8.4-1.19-11.13-2.34-2.76-1.16-5.38-2.26-10.74-2.26s-7.98,1.1-10.74,2.26c-2.73,1.15-5.56,2.34-11.13,2.34s-8.39-1.19-11.13-2.34c-2.76-1.16-5.37-2.26-10.74-2.26s-7.98,1.1-10.74,2.26c-2.73,1.15-5.56,2.34-11.13,2.34s-8.39-1.19-11.13-2.34c-2.76-1.16-5.37-2.26-10.74-2.26s-7.98,1.1-10.74,2.26c-2.73,1.15-5.56,2.34-11.13,2.34s-8.39-1.19-11.13-2.34c-2.76-1.16-5.37-2.26-10.74-2.26s-7.98,1.1-10.74,2.26c-2.73,1.15-5.56,2.34-11.13,2.34s-8.39-1.19-11.13-2.34c-2.76-1.16-5.37-2.26-10.74-2.26s-7.98,1.1-10.74,2.26c-2.73,1.15-5.56,2.34-11.13,2.34s-8.39-1.19-11.13-2.34c-2.76-1.16-5.37-2.26-10.74-2.26s-7.98,1.1-10.74,2.26c-2.73,1.15-5.56,2.34-11.13,2.34s-8.4-1.19-11.13-2.34c-2.76-1.16-5.37-2.26-10.74-2.26s-7.98,1.1-10.74,2.26c-2.73,1.15-5.56,2.34-11.13,2.34s-8.4-1.19-11.13-2.34C7.98,2.1,5.37,1,0,1V0c5.57,0,8.4,1.19,11.13,2.34,2.76,1.16,5.38,2.26,10.74,2.26s7.98-1.1,10.74-2.26c2.73-1.15,5.56-2.34,11.13-2.34s8.39,1.19,11.13,2.34c2.76,1.16,5.37,2.26,10.74,2.26s7.98-1.1,10.74-2.26c2.73-1.15,5.56-2.34,11.13-2.34s8.39,1.19,11.13,2.34c2.76,1.16,5.37,2.26,10.74,2.26s7.98-1.1,10.74-2.26c2.73-1.15,5.56-2.34,11.13-2.34s8.39,1.19,11.13,2.34c2.76,1.16,5.37,2.26,10.74,2.26s7.98-1.1,10.74-2.26c2.73-1.15,5.56-2.34,11.13-2.34s8.39,1.19,11.13,2.34c2.76,1.16,5.37,2.26,10.74,2.26s7.98-1.1,10.74-2.26c2.73-1.15,5.56-2.34,11.13-2.34s8.39,1.19,11.13,2.34c2.76,1.16,5.37,2.26,10.74,2.26s7.98-1.1,10.74-2.26c2.73-1.15,5.56-2.34,11.13-2.34s8.4,1.19,11.13,2.34c2.76,1.16,5.37,2.26,10.74,2.26s7.98-1.1,10.74-2.26c2.73-1.15,5.56-2.34,11.13-2.34v1c-5.37,0-7.98,1.1-10.74,2.26-2.73,1.15-5.56,2.34-11.13,2.34Z\"/>\n            </clipPath>\n          </svg>\n\n          <svg width=\"0\" height=\"0\">\n            <clipPath id=\"object-clip\" clipPathUnits=\"objectBoundingBox\">\n              <path transform=\"scale(0.0013089,0.0013459)\"\n                d=\"M367.0,737.3C341.4,734.8 318.7,726.7 301.2,713.8C295.1,709.3 294.1,708.9 290.0,709.3C287.5,709.5 281.9,710.7 277.5,711.9C261.9,716.2 242.7,715.7 222.3,710.4C197.9,704.0 177.0,692.3 157.0,673.6C151.0,667.9 148.4,666.2 145.4,665.7C125.6,662.5 97.6,646.4 77.7,626.7C51.6,600.9 33.6,570.9 20.1,530.4C0.6,471.9 0.4,389.9 19.5,329.0C42.1,257.5 83.8,205.1 140.7,176.6C164.0,165.0 188.9,159.0 214.0,159.0L226.1,159.0L229.1,155.5C230.9,153.5 235.7,150.3 240.4,148.0C257.8,139.5 282.2,136.1 302.7,139.2C307.0,139.9 312.7,140.4 315.5,140.5L320.5,140.5L324.8,125.0C331.7,99.9 337.7,82.2 343.1,71.0C356.6,42.8 377.8,19.7 399.6,9.3C414.6,2.1 428.2,3.7 445.5,14.6C469.2,29.4 480.2,43.6 480.3,59.0C480.4,69.9 476.8,74.9 463.0,83.1C459.0,85.4 453.0,90.4 448.8,94.8C435.0,109.2 430.6,125.5 437.0,138.0L439.2,142.2L444.3,141.7C447.2,141.4 453.8,140.4 459.0,139.6C464.2,138.7 471.4,138.0 475.0,138.0C497.7,138.0 522.9,145.3 533.3,154.9L537.7,159.0L550.1,159.0C582.0,159.0 611.5,168.1 642.9,187.5C693.4,218.7 732.8,278.2 750.0,349.0C763.3,403.6 761.4,474.2 745.3,526.0C727.7,582.8 696.2,626.4 654.5,651.5C644.8,657.3 635.6,661.2 623.8,664.5C615.8,666.7 614.2,667.5 608.4,672.7C589.5,689.7 568.3,702.5 549.0,708.5C526.1,715.6 502.3,716.7 484.7,711.6C472.4,707.9 471.2,708.1 462.0,714.5C439.2,730.5 412.2,738.3 381.0,737.8C375.2,737.7 368.9,737.5 367.0,737.3Z\"/>\n            </clipPath>\n          </svg>\n\n          <div class=\"candle-glow\"></div>\n\n          <div class=\"water-fill\"></div>\n          <div class=\"stroke-1\"></div>\n          <div class=\"water-fill-2\"></div>\n          <div class=\"stroke-2\"></div>\n\n          <video class=\"water-effect-video\" autoplay loop muted playsinline>\n            <source src=\"{waterEffectVideo}\" type=\"video/webm\">\n          </video>\n\n          <video class=\"petals-video\" autoplay loop muted playsinline>\n            <source src=\"{petalsVideo}\" type=\"video/webm\">\n          </video>\n\n        </div>\n\n        <div class=\"clip-area face-area\">\n          <svg width=\"0\" height=\"0\">\n            <clipPath id=\"face-clip\" clipPathUnits=\"objectBoundingBox\">\n              <path transform=\"scale(0.0013089,0.0013459)\"\n                d=\"M419.8,634.8C418.7,633.9 417.3,628.7 415.6,619.0C414.1,611.0 412.7,603.7 412.4,602.7C411.9,601.0 411.0,600.9 401.2,601.7C387.8,602.7 374.3,602.7 361.9,601.7L352.3,601.0L349.1,616.7C347.4,625.4 345.4,633.1 344.6,633.8C343.4,635.0 341.8,635.1 334.8,634.1C319.5,631.9 299.9,626.8 297.5,624.4C296.3,623.1 296.0,619.7 296.0,606.2L296.0,589.5L281.7,585.6C273.9,583.5 266.6,581.6 265.5,581.3C263.9,581.0 261.6,583.2 254.6,591.9C249.7,598.0 245.0,603.0 244.0,603.0C242.0,603.0 223.9,590.8 215.0,583.5C181.5,555.7 159.9,521.5 149.0,478.8C144.7,462.3 146.8,461.7 165.4,474.3C168.6,476.4 176.5,480.7 182.9,483.7C189.3,486.6 196.5,490.1 199.0,491.3L203.5,493.5L203.3,510.6L203.1,527.7L218.5,533.9C226.9,537.2 234.3,540.0 234.7,540.0C235.2,540.0 236.9,533.0 238.5,524.4C240.2,515.7 242.0,508.0 242.6,507.2C243.5,506.0 244.8,506.1 252.6,508.3C263.9,511.5 291.8,517.7 299.0,518.6C302.0,518.9 305.5,519.9 306.8,520.6C309.5,522.3 309.6,525.2 307.5,542.5C306.7,549.0 306.2,554.5 306.3,554.7C306.9,555.3 326.1,557.9 334.0,558.5L342.5,559.2L342.7,543.4C342.9,531.2 343.3,527.3 344.4,526.1C345.7,524.9 351.8,524.7 382.5,524.7C409.3,524.7 419.4,525.0 420.3,525.9C421.1,526.7 421.6,532.5 421.8,543.2L422.2,559.3L431.6,558.6C440.4,558.0 456.8,555.6 457.6,554.7C457.8,554.5 457.3,547.3 456.4,538.6C455.1,525.3 455.0,522.5 456.2,521.4C456.9,520.6 465.0,518.6 474.0,516.9C483.1,515.2 496.6,512.2 504.0,510.3C522.2,505.5 522.6,505.4 523.8,507.7C524.4,508.7 525.9,516.3 527.1,524.5C528.3,532.8 529.4,539.6 529.5,539.8C530.2,540.8 561.3,527.6 561.8,526.2C562.0,525.6 561.4,520.2 560.6,514.1C558.7,500.6 558.6,494.6 560.2,493.2C560.9,492.7 565.5,490.6 570.5,488.5C582.1,483.7 598.9,475.1 606.5,470.1C616.9,463.1 618.4,464.7 615.2,479.0C609.0,506.4 596.6,531.7 578.6,554.0C571.2,563.2 557.8,576.5 548.4,584.2C539.9,591.1 522.2,603.0 520.4,603.0C519.7,603.0 517.6,601.5 515.8,599.8C511.1,595.1 495.8,582.5 495.1,582.6C494.8,582.7 490.9,583.7 486.5,584.9L478.5,587.1L478.5,604.3L478.5,621.5L475.0,623.2C470.0,625.6 451.0,630.6 435.2,633.5C419.5,636.4 421.7,636.3 419.8,634.8ZM355.6,487.1C347.4,486.6 344.5,486.1 343.8,485.0C343.1,483.9 347.9,473.2 361.4,445.7C377.8,412.3 380.2,407.9 382.1,408.2C383.7,408.4 386.0,411.9 391.4,422.5C405.7,450.4 421.0,483.3 420.5,485.0C420.1,486.3 418.3,486.9 412.3,487.4C403.8,488.1 372.4,487.9 355.6,487.1ZM314.5,444.4C312.0,443.9 266.8,439.7 236.5,437.0C180.7,432.2 169.5,430.9 168.0,429.4C166.4,427.8 166.9,426.8 180.3,401.5C183.8,394.9 195.8,371.9 207.0,350.5C243.5,280.4 243.5,280.5 245.9,280.5C247.4,280.5 248.7,281.6 250.0,284.0C252.8,289.1 323.8,432.7 326.1,437.9C328.6,443.5 327.5,445.1 321.1,444.9C318.6,444.8 315.6,444.6 314.5,444.4ZM437.5,444.1C437.1,443.4 437.1,441.8 437.4,440.4C438.8,434.9 515.7,281.3 517.5,280.7C518.4,280.3 519.9,280.5 520.6,281.1C521.3,281.7 527.4,292.8 534.0,305.7C540.7,318.6 552.2,340.7 559.7,354.8C567.1,369.0 575.9,385.7 579.2,392.0C582.5,398.3 587.9,408.5 591.1,414.6C597.1,425.8 597.9,428.3 595.9,429.5C594.0,430.7 562.8,434.0 490.5,440.5C469.1,442.4 448.5,444.3 444.9,444.6C440.3,445.1 438.1,444.9 437.5,444.1Z\"/>\n            </clipPath>\n          </svg>\n\n          <div class=\"water-fill\"></div>\n          <div class=\"stroke-1\"></div>\n          <div class=\"water-fill-2\"></div>\n          <div class=\"stroke-2\"></div>\n        </div>\n\n        <div class=\"clip-area stem-area\">\n          <svg width=\"0\" height=\"0\">\n            <clipPath id=\"stem-clip\" clipPathUnits=\"objectBoundingBox\">\n              <path transform=\"scale(0.0013089,0.0013459)\"\n                d=\"M323.0,193.5C318.9,189.9 312.5,185.4 308.8,183.4C302.6,180.2 302.0,179.6 302.0,176.7C302.0,174.0 302.6,173.1 305.3,171.7C310.9,168.7 320.9,157.9 325.6,150.0C330.3,142.1 334.2,131.2 338.5,114.0C342.7,97.1 345.8,88.4 353.0,73.5C363.9,51.0 377.9,34.1 395.5,22.6C405.5,16.0 408.4,15.0 417.9,15.0C427.2,15.1 432.8,17.2 445.5,25.6C461.6,36.2 469.9,46.6 470.8,57.4C471.4,64.7 469.9,67.4 463.3,71.6C451.1,79.5 449.4,80.7 443.8,85.8C430.3,98.3 421.6,118.4 424.1,131.5C426.7,145.7 441.2,166.7 453.2,173.9C456.4,175.8 457.0,176.7 457.0,179.6C457.0,182.6 456.5,183.2 452.8,185.1C450.4,186.3 445.2,189.9 441.1,193.1C433.0,199.6 430.6,200.1 423.5,197.3C411.6,192.7 405.4,191.0 394.5,189.5C377.3,187.1 364.7,188.8 346.9,195.9C333.1,201.5 332.1,201.4 323.0,193.5Z\"/>\n            </clipPath>\n          </svg>\n\n          <div class=\"water-fill\"></div>\n          <div class=\"stroke-1\"></div>\n          <div class=\"water-fill-2\"></div>\n          <div class=\"stroke-2\"></div>\n        </div>\n      </div>\n\n      <div class=\"bg-object\">\n        <svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 764 743\" preserveAspectRatio=\"none\">\n          <g>\n            <path style=\"fill:#000;fill-opacity:0.{backop};\"\n              d=\"M367.0,737.3C341.4,734.8 318.7,726.7 301.2,713.8C295.1,709.3 294.1,708.9 290.0,709.3C287.5,709.5 281.9,710.7 277.5,711.9C261.9,716.2 242.7,715.7 222.3,710.4C197.9,704.0 177.0,692.3 157.0,673.6C151.0,667.9 148.4,666.2 145.4,665.7C125.6,662.5 97.6,646.4 77.7,626.7C51.6,600.9 33.6,570.9 20.1,530.4C0.6,471.9 0.4,389.9 19.5,329.0C42.1,257.5 83.8,205.1 140.7,176.6C164.0,165.0 188.9,159.0 214.0,159.0L226.1,159.0L229.1,155.5C230.9,153.5 235.7,150.3 240.4,148.0C257.8,139.5 282.2,136.1 302.7,139.2C307.0,139.9 312.7,140.4 315.5,140.5L320.5,140.5L324.8,125.0C331.7,99.9 337.7,82.2 343.1,71.0C356.6,42.8 377.8,19.7 399.6,9.3C414.6,2.1 428.2,3.7 445.5,14.6C469.2,29.4 480.2,43.6 480.3,59.0C480.4,69.9 476.8,74.9 463.0,83.1C459.0,85.4 453.0,90.4 448.8,94.8C435.0,109.2 430.6,125.5 437.0,138.0L439.2,142.2L444.3,141.7C447.2,141.4 453.8,140.4 459.0,139.6C464.2,138.7 471.4,138.0 475.0,138.0C497.7,138.0 522.9,145.3 533.3,154.9L537.7,159.0L550.1,159.0C582.0,159.0 611.5,168.1 642.9,187.5C693.4,218.7 732.8,278.2 750.0,349.0C763.3,403.6 761.4,474.2 745.3,526.0C727.7,582.8 696.2,626.4 654.5,651.5C644.8,657.3 635.6,661.2 623.8,664.5C615.8,666.7 614.2,667.5 608.4,672.7C589.5,689.7 568.3,702.5 549.0,708.5C526.1,715.6 502.3,716.7 484.7,711.6C472.4,707.9 471.2,708.1 462.0,714.5C439.2,730.5 412.2,738.3 381.0,737.8C375.2,737.7 368.9,737.5 367.0,737.3Z\"/>\n          </g>\n        </svg>\n      </div>\n\n      <canvas class=\"fx-sky\" id=\"fx-sky\"></canvas>\n\n      <div class=\"glow-shadow\"></div>\n\n      <video class=\"complete-video\" autoplay loop muted playsinline style=\"display: none;\">\n        <source src=\"{completeVideo}\" type=\"video/webm\">\n      </video>\n\n    </div>\n  </div>\n\n  <div class=\"goal-text\">\n    <div class=\"text-right\">\n      <div class=\"goal-title\"></div>\n      <p class=\"goal-amount\"></p>\n    </div>\n    <div class=\"text-bottom\">\n      <div class=\"goal-title\"></div>\n      <p class=\"goal-amount\"></p>\n    </div>\n    <div class=\"text-freehand\">\n      <div class=\"goal-title\"></div>\n      <p class=\"goal-amount\"></p>\n    </div>\n  </div>\n";
+  const BODY_TOP = [-1,-1,-1,106,98,93,90,87,84,81,78,77,75,73,71,69,68,67,65,64,62,61,60,59,58,57,56,55,55,54,53,52,52,51,51,50,49,49,48,48,47,47,46,46,46,45,45,45,45,44,44,44,44,44,44,44,44,44,44,44,44,43,42,41,41,40,40,40,39,39,39,39,38,38,38,38,38,38,53,54,55,56,57,57,57,57,57,57,57,57,57,57,57,56,56,55,55,55,54,54,54,54,55,55,55,56,56,56,56,56,56,56,56,56,56,56,56,56,56,55,39,39,38,38,38,38,38,38,39,39,39,39,40,40,40,41,41,42,43,44,44,44,44,44,44,44,44,44,44,44,44,45,45,45,45,46,46,46,47,47,48,48,49,49,50,50,51,52,52,53,54,55,55,56,57,58,59,60,61,62,64,65,67,68,69,71,73,75,77,78,81,83,87,90,93,98,106,-1,-1,-1];
+  const BODY_BOT = [-1,-1,-1,119,127,132,135,138,141,144,146,147,150,151,153,155,156,157,159,160,161,162,163,164,165,166,166,167,167,168,169,170,170,170,171,171,172,172,172,172,173,173,174,175,176,177,178,178,179,180,180,181,182,182,182,183,183,184,184,184,185,185,185,185,185,185,186,186,185,185,185,185,184,184,184,183,183,183,183,184,185,186,187,187,188,188,189,189,189,190,190,190,191,191,191,191,191,191,191,192,192,192,191,191,191,191,191,191,190,190,190,189,189,189,188,188,187,187,186,185,185,183,183,183,183,184,184,184,185,185,185,185,186,186,185,185,185,185,185,185,184,184,184,183,183,182,182,182,181,180,180,179,178,178,177,176,175,174,173,173,172,172,172,172,171,171,171,170,170,169,168,168,167,166,166,165,164,163,162,161,160,159,157,156,155,153,151,150,147,146,144,141,138,135,132,127,119,-1,-1,-1];
+
+  // Lo que en StreamElements hacía jQuery.animate (0.5 s, curva "swing"), aquí con CSS
+  const EXTRA_CSS = `
+.water-fill, .water-fill-2, .stroke-1, .stroke-2, .water-effect-video { height: 0; transition: height .5s cubic-bezier(.37,0,.63,1); }
+`;
+
+  const PREVIEW = !DISPLAY;
+  const widgetEl = $("widget");
+  const cssEl = document.createElement("style");
+  document.head.appendChild(cssEl);
+  let fontLinkEl = null, fontLoaded = "", htmlSig = "";
+  const HTML_KEYS = ["backop", "petalsVideo", "completeVideo", "waterEffectVideo"];
+
+  const isHex = (c) => /^#[0-9a-fA-F]{3,8}$/.test(String(c || ""));
+  function cleanStyle(st) {
+    const v = {};
+    for (const k of Object.keys(DEFAULT_STYLE)) {
+      const d = DEFAULT_STYLE[k];
+      let x = st[k] == null ? d : st[k];
+      if (typeof d === "number") x = num(x, d);
+      else if (typeof d === "boolean") x = !!x;
+      else if (isHex(d)) x = isHex(x) ? x : d;
+      else x = String(x);
+      v[k] = x;
+    }
+    v.fontName = v.fontName.replace(/[^A-Za-z0-9 ]/g, "").trim() || DEFAULT_STYLE.fontName;
+    v.textAlign = ["left", "center", "right"].includes(v.textAlign) ? v.textAlign : "left";
+    v.textpos = ["bottom", "right", "freehand"].includes(v.textpos) ? v.textpos : "bottom";
+    v.faceTint = v.faceTint === "none" ? "none" : "block";
+    v.fontWeight = /^[3-7]00$/.test(v.fontWeight) ? v.fontWeight : "700";
+    v.titleFontWeight = /^[3-7]00$/.test(v.titleFontWeight) ? v.titleFontWeight : "700";
+    v.backop = Math.max(0, Math.min(9, Math.round(v.backop)));
+    v.huerotat = Math.max(0, Math.min(36, Math.round(v.huerotat)));
+    for (const k of ["petalsVideo", "completeVideo", "waterEffectVideo"]) v[k] = v[k].replace(/["<>]/g, "");
+    return v;
+  }
+  const fill = (tpl, vals) => tpl.replace(/\{(\w+)\}/g, (m, k) => (k in vals ? String(vals[k]) : m));
+
+  function renderWidget() {
+    const v = cleanStyle(S);
+    if (PREVIEW) {               // en el panel, la calabaza va centrada en la vista previa
+      v.widgetPosX = Math.round((700 - 220 * v.widgetScale) / 2);
+      v.widgetPosY = 150;
+    }
+    cssEl.textContent = fill(WCSS, v) + EXTRA_CSS;
+    const sig = HTML_KEYS.map((k) => v[k]).join("|");
+    if (sig !== htmlSig) {
+      htmlSig = sig;
+      widgetEl.innerHTML = fill(WHTML, v);
+      FX.init();
+    }
+    if (fontLoaded !== v.fontName) {
+      fontLoaded = v.fontName;
+      if (!fontLinkEl) { fontLinkEl = document.createElement("link"); fontLinkEl.rel = "stylesheet"; document.head.appendChild(fontLinkEl); }
+      fontLinkEl.href = "https://fonts.googleapis.com/css2?family=" + v.fontName.split(" ").join("+") + ":wght@300;400;500;600;700&display=swap";
+    }
+    applyClasses(v);
+    updateProgress();
+  }
+
+  const qa = (sel) => widgetEl.querySelectorAll(sel);
+  const q1 = (sel) => widgetEl.querySelector(sel);
+  function applyClasses(v) {
+    qa(".goal-title").forEach((el) => { el.textContent = v.goalTitle; });
+    q1(".goal-widget").classList.toggle("mirrored", v.mirror);
+    q1(".text-bottom").style.visibility = v.textpos === "bottom" ? "visible" : "hidden";
+    q1(".text-right").style.visibility = v.textpos === "right" ? "visible" : "hidden";
+    q1(".text-freehand").style.visibility = v.textpos === "freehand" ? "visible" : "hidden";
+    q1(".liquid-container").style.filter = v.fillglow ? "" : "none";
+    q1(".liquid-container").classList.toggle("rainbow-glow", v.rainbowGlow);
+    qa(".water-fill, .water-fill-2").forEach((el) => el.classList.toggle("rainbow-fill", v.rainbowFill));
+    q1(".petals-video").style.visibility = v.particles ? "" : "hidden";
+    q1(".goal-text").classList.toggle("text-glow", v.textglow);
+    q1(".goal-text").classList.toggle("rainbow-text-glow", v.rainbowTextGlow);
+    q1(".goal-widget").classList.toggle("candle-on", v.candle);
+  }
+
+  /* ---------------- estado del conteo ---------------- */
+  let count = 0, goal = 100;
+  let gotTally = false, gotGoal = false, loaded = false, wasComplete = false;
+  let lastAmountText = "";
+
+  function updateProgress() {
+    const st = S;
+    let percentage = goal > 0 ? (count / goal) * 100 : 0;
+    if (percentage < 0) percentage = 0;
+
+    const petals = q1(".petals-video"), water = q1(".water-effect-video"), done = q1(".complete-video");
+    if (percentage > 0) {
+      q1(".glow-shadow").classList.add("fade-in");
+      if (st.particles) petals.style.display = "block";
+      if (st.waterEffect) water.style.display = "block";
+    } else {
+      petals.style.display = "none";
+      water.style.display = "none";
+    }
+    if (!st.waterEffect) water.style.display = "none";
+
+    const txt = Math.floor(count) + "  ·  " + Math.floor(goal);
+    qa(".goal-amount").forEach((el) => { el.textContent = txt; });
+    lastAmountText = txt;
+
+    const complete = goal > 0 && percentage >= 100;
+    if (complete) {
+      percentage = 100;
+      if (st.circleend) {
+        petals.style.display = "none";
+        done.style.display = "block";
+        try { const pr = done.play(); if (pr && pr.catch) pr.catch(() => {}); } catch (e) {}
+      } else done.style.display = "none";
+      if (!wasComplete && loaded) FX.celebrate();
+      FX.setSparkles(st.completeFx !== false);
+    } else {
+      done.style.display = "none";
+      FX.setSparkles(false);
+    }
+    wasComplete = complete;
+
+    const p = percentage / 100;
+    const gk = st.progressiveGlow ? (0.45 + 0.75 * p) : 1;
+    const gw = q1(".goal-widget");
+    gw.style.setProperty("--gk", gk.toFixed(3));
+    gw.style.setProperty("--cg", (st.candle ? 0.25 + 0.75 * p : 0).toFixed(3));
+
+    qa(".water-fill, .stroke-1").forEach((el) => { el.style.height = percentage + "%"; });
+    qa(".water-fill-2, .stroke-2").forEach((el) => { el.style.height = Math.max(0, percentage - 2) + "%"; });
+    if (st.waterEffect) water.style.height = percentage + "%";
+    if (percentage < 100 && st.particles) petals.style.height = percentage + "%";
+  }
+
+  function bounce() {
+    if (!S.bounce) return;
+    const el = q1(".pumpkin-body");
+    if (!el) return;
+    el.classList.remove("bounce");
+    void el.offsetWidth;
+    el.classList.add("bounce");
+  }
+
+  /* ===== EFECTOS DE META COMPLETA: murciélagos y destellos (Canvas) ===== */
+  const FX = (function() {
+  const DPR = 3;
+  const OX = 150;   // desplazamiento del lienzo respecto a la figura (200 x 195)
+  const OY = 200;
+  const CW = 500, CH = 395;
+
+  let ctx = null;
+  let bats = [];
+  let sparks = [];
+  let sparkleOn = false;
+  let sparkleTimer = 0;
+  let running = false;
+  let last = 0;
+
+  function init() {
+    const cv = document.getElementById('fx-sky');
+    cv.width = CW * DPR;
+    cv.height = CH * DPR;
+    ctx = cv.getContext('2d');
+    ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+  }
+
+  function celebrate() {
+    if (S.completeFx === false) return;
+    for (let i = 0; i < 9; i++) {
+      const a = -Math.PI / 2 + (i - 4) * 0.32 + (Math.random() - 0.5) * 0.2;
+      const sp = 140 + Math.random() * 90;
+      bats.push({
+        x: 100, y: 70, vx: Math.cos(a) * sp, vy: Math.sin(a) * sp,
+        t: 0, life: 2.6 + Math.random() * 0.6, size: 0.8 + Math.random() * 0.5,
+        flap: Math.random() * 6
+      });
+    }
+    for (let i = 0; i < 30; i++) addSpark(true);
+    kick();
+  }
+
+  function addSpark(burst) {
+    let x, y;
+    if (burst) {
+      x = 100 + (Math.random() - 0.5) * 60;
+      y = 90 + (Math.random() - 0.5) * 50;
+    } else {
+      let c, tries = 0;
+      do { c = Math.floor(10 + Math.random() * 180); tries++; } while (BODY_TOP[c] < 0 && tries < 20);
+      if (BODY_TOP[c] < 0) return;
+      x = c;
+      y = BODY_TOP[c] + Math.random() * (BODY_BOT[c] - BODY_TOP[c]) * 0.5 - 10;
+    }
+    const a = Math.random() * Math.PI * 2;
+    const sp = burst ? 60 + Math.random() * 120 : 8 + Math.random() * 12;
+    sparks.push({ x: x, y: y, vx: Math.cos(a) * sp, vy: Math.sin(a) * sp - (burst ? 30 : 10),
+      t: 0, life: burst ? 1 + Math.random() * 0.6 : 0.9 + Math.random() * 0.5,
+      size: burst ? 2 + Math.random() * 2.5 : 1.5 + Math.random() * 2 });
+  }
+
+  function setSparkles(on) {
+    sparkleOn = on && S.completeFx !== false;
+    if (sparkleOn) kick();
+  }
+
+  function clear() {
+    bats = []; sparks = [];
+    sparkleOn = false;
+    if (ctx) ctx.clearRect(0, 0, CW, CH);
+  }
+
+  function drawBat(b) {
+    const k = Math.min(1, b.t / 0.25) * Math.max(0, 1 - Math.max(0, b.t - b.life + 0.8) / 0.8);
+    const flap = Math.sin(b.t * 18 + b.flap);
+    ctx.save();
+    ctx.globalAlpha = k;
+    ctx.translate(b.x + OX, b.y + OY);
+    ctx.scale(b.size, b.size);
+    ctx.shadowColor = S.bordeGlow || '#ff7a1a';
+    ctx.shadowBlur = 8;
+    ctx.fillStyle = '#140a14';
+    const wy = -6 * flap;
+    ctx.beginPath();
+    ctx.moveTo(0, -2);
+    ctx.quadraticCurveTo(-6, wy - 4, -16, wy);
+    ctx.quadraticCurveTo(-12, wy + 2, -11, wy + 5);
+    ctx.quadraticCurveTo(-7, 1, -5, 4);
+    ctx.quadraticCurveTo(-2, 2, 0, 5);
+    ctx.quadraticCurveTo(2, 2, 5, 4);
+    ctx.quadraticCurveTo(7, 1, 11, wy + 5);
+    ctx.quadraticCurveTo(12, wy + 2, 16, wy);
+    ctx.quadraticCurveTo(6, wy - 4, 0, -2);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.arc(0, -1, 3, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+  }
+
+  function drawSpark(s) {
+    const k = 1 - s.t / s.life;
+    const r = s.size * (0.6 + 0.4 * k);
+    ctx.save();
+    ctx.globalAlpha = Math.max(0, k);
+    ctx.translate(s.x + OX, s.y + OY);
+    ctx.rotate(s.t * 3);
+    ctx.fillStyle = S.faceLiquidColor || '#ffd23f';
+    ctx.shadowColor = S.bordeGlow || '#ff7a1a';
+    ctx.shadowBlur = 6;
+    ctx.beginPath();
+    ctx.moveTo(0, -r * 2); ctx.lineTo(r * 0.5, -r * 0.5); ctx.lineTo(r * 2, 0); ctx.lineTo(r * 0.5, r * 0.5);
+    ctx.lineTo(0, r * 2); ctx.lineTo(-r * 0.5, r * 0.5); ctx.lineTo(-r * 2, 0); ctx.lineTo(-r * 0.5, -r * 0.5);
+    ctx.closePath();
+    ctx.fill();
+    ctx.restore();
+  }
+
+  function step(now) {
+    const dt = Math.min(0.05, (now - last) / 1000 || 0.016);
+    last = now;
+
+    for (const b of bats) { b.t += dt; b.x += b.vx * dt; b.y += b.vy * dt; b.vy -= 20 * dt; }
+    bats = bats.filter(b => b.t < b.life);
+
+    if (sparkleOn) {
+      sparkleTimer -= dt;
+      if (sparkleTimer <= 0) { addSpark(false); sparkleTimer = 0.25 + Math.random() * 0.25; }
+    }
+    for (const s of sparks) { s.t += dt; s.x += s.vx * dt; s.y += s.vy * dt; s.vy += 40 * dt; }
+    sparks = sparks.filter(s => s.t < s.life);
+
+    ctx.clearRect(0, 0, CW, CH);
+    for (const s of sparks) drawSpark(s);
+    for (const b of bats) drawBat(b);
+
+    if (bats.length || sparks.length || sparkleOn) {
+      requestAnimationFrame(step);
+    } else {
+      running = false;
+    }
+  }
+
+  function kick() {
+    if (running || !ctx) return;
+    running = true;
+    last = performance.now();
+    requestAnimationFrame(step);
+  }
+
+  return { init, celebrate, setSparkles, clear };
+})();
+
+  // primer dibujo (con valores por defecto) antes de que llegue Firebase
+  if (BAKED && BAKED.style) S = { ...DEFAULT_STYLE, ...BAKED.style };
+  if (PREVIEW) { const st = $("pvStage"); if (st) st.appendChild(widgetEl); }
+  renderWidget();
+
+  /* ================================================================
+     FIREBASE
+  ================================================================ */
+  let db = null;
+  const R = "meta/";                 // todo lo de la meta vive en /meta del mismo proyecto que el timer
+  const rf = (p) => ref(db, R + p);
+  let serverOffset = 0, offsetLoaded = false;
+  const now = () => Date.now() + serverOffset;
+  let CAN_COUNT = false;             // panel (admin) y overlay con clave cuentan; overlay sin clave solo muestra
+
+  function startFirebase(role) {
+    CAN_COUNT = role === "admin" || role === "counter";
+    onValue(ref(db, ".info/serverTimeOffset"), (s) => { serverOffset = num(s.val()); offsetLoaded = true; });
+
+    onValue(rf("tally"), (snap) => {
+      tally = snap.val() || {};
+      const c = Math.max(0, Math.floor(num(tally.count)));
+      const prev = count;
+      count = c;
+      if (!gotTally) { gotTally = true; maybeLoaded(); }
+      else if (loaded && c > prev) bounce();
+      updateProgress();
+      hooks.count();
+    });
+    onValue(rf("goal"), (snap) => {
+      const v = snap.val();
+      goal = v == null ? 100 : Math.max(1, Math.floor(num(v, 100)));
+      if (!gotGoal) { gotGoal = true; maybeLoaded(); }
+      updateProgress();
+      hooks.count();
+    });
+    if (!BAKED) {
+      onValue(rf("style"), (snap) => {
+        const v = snap.val();
+        S = { ...DEFAULT_STYLE, ...(v || {}) };
+        renderWidget();
+        hooks.style();
+      });
+    }
+    // pruebas de animación desde el panel (no tocan el conteo)
+    let fxSeen = null;
+    onValue(rf("fx"), (snap) => {
+      const v = snap.val();
+      const id = v && v.id ? v.id : "";
+      // la primera lectura solo marca lo que ya estaba (aunque esté vacío), para no repetirlo al abrir
+      if (fxSeen === null) { fxSeen = id; return; }
+      if (!id || id === fxSeen) return;
+      fxSeen = v.id;
+      if (v.type === "bounce") bounce();
+      else if (v.type === "complete") FX.celebrate();
+    });
+
+    // La meta ya no lee el chat: la alimenta el timer (index.html).
+    // El overlay con clave solo avisa que está en pantalla (luz "Overlay meta").
+    if (CAN_COUNT) {
+      ircLive = DISPLAY;
+      startPresence();
+    }
+  }
+  function maybeLoaded() {
+    if (loaded || !gotTally || !gotGoal) return;
+    wasComplete = goal > 0 && count >= goal;   // al abrir no se festeja otra vez
+    loaded = true;
+  }
+
+  /* ================================================================
+     CONTEO: una sola transacción guarda el candado del evento y la suma.
+     Así no hay forma de que el candado quede puesto sin sumar, ni de sumar dos veces.
+     tally = { count, locks: { idEvento: hora }, bulks: { idRegalo: { n, got, cr, by, ts, done } } }
+       n   = subs anunciadas en un regalo masivo
+       got = avisos sueltos que llegaron de ese regalo
+       cr  = cuántas de ese regalo ya se sumaron (siempre max(n, got))
+  ================================================================ */
+  let tally = {};
+  const H48 = 48 * 3600 * 1000;
+
+  // Aplica una lista de operaciones sobre el tally. Las que ya estaban contadas (candado puesto) se saltan.
+  function makeTx(ops) {
+    const outs = ops.map(() => ({ skip: true, delta: 0, before: 0, after: 0, bulk: null }));
+    const fn = (cur) => {
+      const t = now();
+      const c = (cur && typeof cur === "object") ? cur : {};
+      const locks = { ...(c.locks || {}) };
+      const bulks = { ...(c.bulks || {}) };
+      let cnt = Math.max(0, Math.floor(num(c.count)));
+      let changed = false;
+      const getBulk = (gid) => ({ n: 0, got: 0, cr: 0, ts: t, by: "", ...(bulks[gid] || {}) });
+      ops.forEach((op, i) => {
+        const out = outs[i];
+        out.skip = true; out.delta = 0; out.bulk = null; out.before = cnt;
+        if (op.lock && locks[op.lock] != null) return;          // ya lo contó otra copia
+        switch (op.t) {
+          case "one": cnt += 1; break;
+          case "gift": {
+            const b = getBulk(op.gid);
+            b.got = num(b.got) + 1;
+            if (!b.by) b.by = op.by || "";
+            const target = Math.max(num(b.n), b.got);
+            cnt += target - num(b.cr);
+            b.cr = target; b.lt = t;
+            bulks[op.gid] = b; out.bulk = b;
+            break;
+          }
+          case "bulk": {
+            const b = getBulk(op.gid);
+            b.n = Math.max(num(b.n), op.n);
+            b.by = op.by || b.by;
+            if (op.anon) b.anon = true;
+            const target = Math.max(b.n, num(b.got));
+            cnt += target - num(b.cr);
+            b.cr = target; b.lt = t;
+            bulks[op.gid] = b; out.bulk = b;
+            break;
+          }
+          case "add": cnt = Math.max(0, cnt + op.d); break;
+          case "set": cnt = Math.max(0, op.v); break;
+          case "done": {
+            const b = bulks[op.gid];
+            if (!b || b.done) return;
+            bulks[op.gid] = { ...b, done: true };
+            out.bulk = bulks[op.gid];
+            break;
+          }
+          default: return;
+        }
+        if (op.lock) locks[op.lock] = t;
+        out.skip = false; changed = true;
+        out.after = cnt; out.delta = cnt - out.before;
+      });
+      if (!changed) return;                                      // nada que guardar
+      for (const k in locks) if (t - num(locks[k]) > H48) delete locks[k];
+      for (const k in bulks) if (bulks[k] && bulks[k].done && t - num(bulks[k].ts) > H48) delete bulks[k];
+      return { ...c, count: cnt, locks, bulks, updated: t };
+    };
+    return { fn, outs };
+  }
+
+  // Cola: cada copia manda una transacción a la vez y junta en una sola las operaciones
+  // que se acumulan (un regalo de 50 subs se guarda en 1 o 2 escrituras, no en 50).
+  const opQueue = [];
+  let opBusy = false;
+  function runOp(op) {
+    return new Promise((res) => { opQueue.push({ op, res }); pumpOps(); });
+  }
+  async function pumpOps() {
+    if (opBusy || !opQueue.length || !db) return;
+    opBusy = true;
+    const batch = opQueue.splice(0, 200);
+    const { fn, outs } = makeTx(batch.map((b) => b.op));
+    let committed = false, ok = false;
+    for (let i = 0; i < 6 && !ok; i++) {
+      try {
+        // applyLocally: false = la pantalla solo cambia con el valor confirmado por Firebase
+        const res = await runTransaction(rf("tally"), fn, { applyLocally: false });
+        committed = res.committed; ok = true;
+      } catch (e) { await sleep(1000 * (i + 1)); }
+    }
+    batch.forEach((b, i) => b.res(committed && !outs[i].skip ? outs[i] : null));
+    opBusy = false;
+    pumpOps();
+  }
+
+  // Respaldo entre copias: la primera copia conectada (por orden de id) cuenta al instante;
+  // las demás esperan un poco y solo cuentan si el evento todavía no aparece contado.
+  const BACKUP_DELAY = (TEST && TEST.backupDelay) || 1500;
+  function myRank() {
+    const live = Object.entries(presence).filter(([id, p]) => p && p.irc).map(([id]) => id).sort();
+    const i = live.indexOf(INSTANCE);
+    return i < 0 ? live.length : i;
+  }
+  const alreadyCounted = (op) => !!(op.lock && tally && tally.locks && tally.locks[op.lock] != null);
+
+  function addHistory(kind, text, delta, note) {
+    if (!db) return;
+    const e = { ts: now(), kind, text: String(text).slice(0, 280), by: whereLabel() };
+    if (note) e.note = String(note).slice(0, 280);
+    if (delta != null) e.delta = Math.round(delta);
+    push(rf("history"), e).catch(() => {});
+  }
+
+  async function countEvent(op, text, kind, noteFn) {
+    const wait = myRank() * BACKUP_DELAY;
+    if (wait) { await sleep(wait); if (alreadyCounted(op)) return; }
+    const r = await runOp(op);
+    if (!r || r.delta <= 0) return;
+    addHistory(kind, text, r.delta, noteFn ? noteFn(r) : "");
+  }
+
+  // Revisión de regalos masivos: compara lo anunciado con los avisos sueltos que llegaron
+  let sweeping = false;
+  async function sweepBulks() {
+    if (sweeping || !tally || !tally.bulks || !offlineOk()) return;
+    sweeping = true;
+    try {
+      for (const [gid, b] of Object.entries(tally.bulks)) {
+        if (!b || b.done || now() - Math.max(num(b.ts), num(b.lt)) < BULK_WAIT) continue;   // espera a que dejen de llegar avisos
+        const r = await runOp({ t: "done", gid });
+        if (!r || !r.bulk) continue;
+        const B = r.bulk, n = num(B.n), got = num(B.got), who = B.by || "alguien";
+        if (n > 0 && got === 0) {
+          addHistory("warn", `Regalo de ${who}: se anunciaron ${n} subs, pero no llegó ningún aviso suelto`, null,
+            `Se contaron las ${n} del anuncio. Si el conteo subió de más con este regalo, resta la diferencia a mano.`);
+        } else if (n > 0 && got < n) {
+          addHistory("warn", `Regalo de ${who}: se anunciaron ${n} subs y llegaron ${got} avisos sueltos`, null,
+            `Se contaron las ${n} del anuncio. Twitch no mandó ${n - got} ${n - got === 1 ? "aviso" : "avisos"}; no hace falta hacer nada.`);
+        } else if (n > 0 && got > n) {
+          addHistory("warn", `Regalo de ${who}: llegaron ${got} avisos sueltos y se anunciaron solo ${n}`, null,
+            `Se contaron ${got}. Revisa si es correcto.`);
+        }
+      }
+    } finally { sweeping = false; }
+  }
+  const offlineOk = () => offsetLoaded;
+
+  /* ================================================================
+     TWITCH CHAT (IRC anónimo, solo lectura)
+  ================================================================ */
+  function parseTags(raw) {
+    const tags = {};
+    if (!raw.startsWith("@")) return { tags, rest: raw };
+    const sp = raw.indexOf(" ");
+    for (const pair of raw.slice(1, sp).split(";")) {
+      const eq = pair.indexOf("=");
+      tags[pair.slice(0, eq)] = pair.slice(eq + 1);
+    }
+    return { tags, rest: raw.slice(sp + 1) };
+  }
+  const unesc = (s) => String(s || "").replace(/\\s/g, " ").replace(/\\:/g, ";").replace(/\\\\/g, "\\");
+  const planLabel = (p) => ({ Prime: "Prime", "1000": "T1", "2000": "T2", "3000": "T3" }[String(p)] || "T1");
+  const giftId = (tags) => {
+    const g = tags["msg-param-origin-id"] || tags["msg-param-community-gift-id"] || "";
+    return g ? "g" + safeKey(g) : "";
+  };
+
+  function handleLine(line, sock) {
+    if (line.startsWith("PING")) { sock.send("PONG :tmi.twitch.tv"); return; }
+    const { tags, rest } = parseTags(line);
+    if (rest.startsWith("PING")) { sock.send("PONG :tmi.twitch.tv"); return; }
+    const parts = rest.split(" ");
+    const cmd = rest.startsWith(":") ? parts[1] : parts[0];
+    if (cmd !== "USERNOTICE") return;
+    // Chat compartido: lo que viene del canal de otro streamer no cuenta
+    if (tags["source-room-id"] && tags["room-id"] && tags["source-room-id"] !== tags["room-id"]) return;
+
+    const mid = tags["msg-id"] || "";
+    const user = unesc(tags["display-name"]) || tags.login || "alguien";
+    const evId = tags.id || `${mid}-${tags["user-id"] || ""}-${tags["tmi-sent-ts"] || ""}`;
+    const lock = "e" + safeKey(evId);
+    const plan = tags["msg-param-sub-plan"];
+    const anon = mid.startsWith("anon") || String(tags.login || "").toLowerCase() === "ananonymousgifter";
+    const gifter = anon ? "Anónimo" : user;
+    const kind = anon ? "anon" : "auto";
+
+    switch (mid) {
+      case "sub":
+      case "resub": {
+        const multi = parseInt(tags["msg-param-multimonth-duration"], 10) || 1;
+        const cum = parseInt(tags["msg-param-cumulative-months"], 10) || 0;
+        const text = mid === "resub"
+          ? `Resub ${planLabel(plan)} de ${user}${cum > 1 ? ` (mes ${cum})` : ""}`
+          : `Sub ${planLabel(plan)} de ${user}`;
+        countEvent({ t: "one", lock }, text, "auto", () => multi > 1 ? `Pagó ${multi} meses juntos; cuenta como 1 sub.` : "");
+        return;
+      }
+      case "subgift":
+      case "anonsubgift": {
+        const to = unesc(tags["msg-param-recipient-display-name"]) || "";
+        const gid = giftId(tags);
+        const text = `Sub ${planLabel(plan)} regalado por ${gifter}${to ? " a " + to : ""}`;
+        countEvent(gid ? { t: "gift", lock, gid, by: gifter } : { t: "one", lock }, text, kind);
+        return;
+      }
+      case "submysterygift":
+      case "anonsubmysterygift": {
+        const n = parseInt(tags["msg-param-mass-gift-count"], 10) || 0;
+        const gid = giftId(tags);
+        if (n <= 0 || !gid) return;      // sin id no se puede enlazar: cuentan los avisos sueltos
+        countEvent({ t: "bulk", lock, gid, n: Math.min(n, 1000), by: gifter, anon }, `Regalo de ${gifter}: ${n} subs ${planLabel(plan)}`, kind,
+          (r) => r.delta < n ? `${n - r.delta} ya se habían contado por separado.` : "");
+        return;
+      }
+      // sigue pagando un sub que le regalaron, o pasó de Prime a pagado: cuenta como sub
+      case "giftpaidupgrade":
+      case "anongiftpaidupgrade": {
+        const from = unesc(tags["msg-param-sender-name"]) || "";
+        countEvent({ t: "one", lock }, `Sub de ${user} (sigue pagando el sub que le regaló${from ? " " + from : "ron"})`, "auto");
+        return;
+      }
+      case "primepaidupgrade":
+        countEvent({ t: "one", lock }, `Sub ${planLabel(plan || "1000")} de ${user} (pasó de Prime a pagado)`, "auto");
+        return;
+      default: return;
+    }
+  }
+
+  let ws = null, ircRetry = null, ircGen = 0, ircLive = false;
+  let ircLastRx = 0, ircPinged = false;
+  let ircDownAt = 0, othersLiveAtDown = true, everLive = false;
+  setInterval(() => {
+    if (!ws || ws.readyState !== 1) return;
+    const idle = Date.now() - ircLastRx;
+    if (idle > 75000) { try { ws.close(); } catch (e) {} ircConnect(); return; }
+    if (idle > 40000 && !ircPinged) { ircPinged = true; try { ws.send("PING :bs-subs"); } catch (e) {} }
+  }, 15000);
+
+  function setIrc(live) {
+    if (live && !ircLive) {
+      // se recuperó: si estuvo caído un rato y ninguna otra copia escuchaba, se avisa
+      if (everLive && ircDownAt) {
+        const gap = Date.now() - ircDownAt;
+        if (gap > 20000 && !othersLiveAtDown) {
+          addHistory("warn", `El chat estuvo desconectado ${Math.round(gap / 1000)} s en ${whereLabel()} y ninguna otra copia escuchaba`, null,
+            "Si alguien se suscribió en ese rato, súmalo a mano.");
+        }
+      }
+      ircDownAt = 0; everLive = true;
+    } else if (!live && ircLive) {
+      ircDownAt = Date.now();
+      othersLiveAtDown = Object.entries(presence).some(([id, p]) => id !== INSTANCE && p && p.irc);
+    }
+    ircLive = live;
+    announce();
+    hooks.irc(live);
+  }
+  function ircConnect() {
+    const gen = ++ircGen;
+    clearTimeout(ircRetry);
+    if (ws) { try { ws.close(); } catch (e) {} }
+    const sock = new WebSocket("wss://irc-ws.chat.twitch.tv:443");
+    ws = sock;
+    sock.onopen = () => {
+      ircLastRx = Date.now(); ircPinged = false;
+      sock.send("CAP REQ :twitch.tv/tags twitch.tv/commands");
+      sock.send("PASS SCHMOOPIIE");
+      sock.send("NICK justinfan" + (1000 + (crypto.getRandomValues(new Uint32Array(1))[0] % 80000)));
+      sock.send("JOIN #" + TW_CHANNEL);
+    };
+    sock.onmessage = (e) => {
+      if (gen !== ircGen) return;
+      ircLastRx = Date.now(); ircPinged = false;
+      for (const line of String(e.data).split("\r\n")) {
+        if (!line) continue;
+        if (line.includes(" 001 ") || line.includes(" JOIN #" + TW_CHANNEL)) setIrc(true);
+        try { handleLine(line, sock); } catch (err) {}
+      }
+    };
+    sock.onclose = () => {
+      if (gen !== ircGen) return;
+      setIrc(false);
+      ircRetry = setTimeout(ircConnect, 4000);
+    };
+    sock.onerror = () => { try { sock.close(); } catch (e) {} };
+  }
+
+  /* ---------------- presencia: quién está contando ---------------- */
+  let presence = {};
+  let presRef = null;
+  function announce() {
+    if (!presRef) return;
+    set(presRef, { where: whereLabel(), irc: ircLive, ts: now() }).catch(() => {});
+  }
+  function startPresence() {
+    presRef = rf("presence/" + INSTANCE);
+    onValue(ref(db, ".info/connected"), (s) => {
+      if (s.val() === true) { onDisconnect(presRef).remove(); announce(); }
+    });
+    onValue(rf("presence"), (snap) => { presence = snap.val() || {}; hooks.presence(); });
+  }
+
+  /* ================================================================
+     ACCESO
+     - Panel: Google. Solo cuentas en /admins.
+     - Overlay con #k=clave: cuenta de overlay, cuenta subs.
+     - Overlay sin clave: solo muestra.
+  ================================================================ */
+  let fbApp = null, auth = null;
+  if (CONFIGURED) {
+    fbApp = initializeApp(CFG);
+    db = getDatabase(fbApp);
+    auth = getAuth(fbApp);
+  }
+  let started = false;
+  function go(role) {
+    if (started) return; started = true;
+    startFirebase(role);
+    if (!DISPLAY && typeof initPanel === "function") initPanel();
+  }
+  if (!CONFIGURED) {
+    if (DISPLAY) console.warn("Overlay sin configurar: falta pegar la config de Firebase.");
+    else { $("mainView").hidden = false; $("cfgBanner").hidden = false; }
+  } else if (DISPLAY) {
+    const key = new URLSearchParams(location.hash.slice(1)).get("k");
+    if (key) signInWithEmailAndPassword(auth, COUNTER_EMAIL, key).then(() => go("counter"))
+      .catch(() => { console.warn("Clave del overlay incorrecta: solo se mostrará el conteo."); go("viewer"); });
+    else go("viewer");
+  } else {
+    const gate = $("gate"), gateMsg = $("gateMsg");
+    const provider = new GoogleAuthProvider();
+    $("btnLogin").addEventListener("click", () => {
+      gateMsg.textContent = "Abriendo Google...";
+      signInWithPopup(auth, provider).catch((e) => {
+        if (e && (e.code === "auth/popup-blocked" || e.code === "auth/operation-not-supported-in-this-environment")) signInWithRedirect(auth, provider);
+        else gateMsg.textContent = "No se pudo iniciar sesión (" + (e && e.code || "error") + ").";
+      });
+    });
+    const out = () => signOut(auth).then(() => location.reload());
+    $("btnLogout").addEventListener("click", out);
+    $("btnLogout2").addEventListener("click", out);
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) { gate.classList.add("show"); gateMsg.textContent = ""; return; }
+      if (user.email === COUNTER_EMAIL) { await signOut(auth); return; }
+      gateMsg.textContent = "Revisando permisos...";
+      let ok = false;
+      try { ok = (await get(ref(db, "admins/" + user.uid))).val() === true; } catch (e) { ok = false; }
+      if (!ok) {
+        gate.classList.add("show");
+        gateMsg.innerHTML = "Esta cuenta (" + esc(user.email) + ") no tiene permiso.<br>Pásale este código al admin para que te agregue:<br><code>" + esc(user.uid) + "</code>";
+        $("btnLogout2").hidden = false;
+        return;
+      }
+      gate.classList.remove("show");
+      $("whoami").textContent = user.email;
+      go("admin");
+    });
+  }
+
+  /*PANEL-JS-BEGIN*/
+  function initPanel() {
+    const flash = (id, msg) => { const el = $(id); if (!el) return; el.textContent = msg; clearTimeout(el._t); el._t = setTimeout(() => { el.textContent = ""; }, 3500); };
+
+    $("mainView").hidden = false;
+    $("cfgBanner").hidden = CONFIGURED;
+
+    /* ---------------- link para OBS (solo meta) ---------------- */
+    const KEY_LS = "bs_overlay_key";              // la misma clave que guarda el panel del timer
+    $("ovKey").value = lsGet(KEY_LS) || "";
+    $("ovKey").addEventListener("change", () => lsSet(KEY_LS, $("ovKey").value.trim()));
+    const dir = location.origin + location.pathname.replace(/[^/]*$/, "");
+    const metaDisplay = dir + "meta.html?display";
+    const copy = async (txt, msg) => { try { await navigator.clipboard.writeText(txt); flash("connFlash", msg); } catch (e) { prompt("Copia el link:", txt); } };
+    $("btnCopyObs").addEventListener("click", () => {
+      const k = $("ovKey").value.trim();
+      if (!k) { flash("connFlash", "Escribe la clave del overlay primero."); $("ovKey").focus(); return; }
+      lsSet(KEY_LS, k);
+      copy(metaDisplay + "#k=" + encodeURIComponent(k), "Link de la META copiado. Pégalo en una fuente de navegador de OBS.");
+    });
+    $("btnCopyView").addEventListener("click", () => copy(metaDisplay, "Link de la meta sin clave copiado (solo muestra, no cuenta)."));
+
+    /* ---------------- vista previa ---------------- */
+    const pvWrap = $("pvWrap"), pvStage = $("pvStage");
+    function fitPreview() {
+      const w = pvWrap.clientWidth || 700;
+      const k = Math.min(1, w / 700);
+      pvStage.style.transform = `scale(${k})`;
+      pvWrap.style.height = (560 * k) + "px";
+    }
+    new ResizeObserver(fitPreview).observe(pvWrap);
+    fitPreview();
+
+    /* ---------------- nombre ---------------- */
+    $("myName").value = myName;
+    $("myName").addEventListener("change", () => {
+      myName = $("myName").value.trim().slice(0, 30);
+      lsSet("bs_subs_name", myName);
+      announce();
+    });
+
+    /* ---------------- conteo grande ---------------- */
+    hooks.count = () => {
+      $("bigNum").innerHTML = `${count} <small>/ ${goal}</small>`;
+      const pct = goal > 0 ? Math.min(100, (count / goal) * 100) : 0;
+      $("bigBar").style.width = pct + "%";
+      $("bigPct").textContent = (goal > 0 ? Math.round((count / goal) * 100) : 0) + " % de la meta" + (count >= goal ? " · META COMPLETA" : "");
+      if (document.activeElement !== $("opGoal")) $("opGoal").placeholder = goal;
+    };
+    hooks.count();
+
+    const needDb = () => { if (!db) { flash("opFlash", "Falta conectar Firebase."); return false; } return true; };
+    async function manualAdd(d) {
+      if (!needDb() || !d) return;
+      const r = await runOp({ t: "add", d });
+      if (!r) { flash("opFlash", "No se pudo guardar. Revisa la conexión."); return; }
+      if (r.delta === 0) { flash("opFlash", "El conteo ya está en 0."); return; }
+      addHistory("manual", r.delta > 0 ? `Sumado a mano: ${r.delta}` : `Restado a mano: ${-r.delta}`, r.delta);
+    }
+    document.querySelectorAll("[data-q]").forEach((b) => b.addEventListener("click", () => manualAdd(num(b.dataset.q))));
+    const amount = () => Math.floor(Math.abs(num($("opAmount").value)));
+    $("btnAdd").addEventListener("click", () => manualAdd(amount()));
+    $("btnSub").addEventListener("click", () => manualAdd(-amount()));
+
+    $("btnSet").addEventListener("click", async () => {
+      if (!needDb()) return;
+      if ($("opSet").value === "") { $("opSet").focus(); return; }
+      const v = Math.max(0, Math.floor(num($("opSet").value)));
+      const r = await runOp({ t: "set", v });
+      if (!r) { flash("opFlash", "No se pudo guardar. Revisa la conexión."); return; }
+      addHistory("manual", `Número fijo: de ${r.before} a ${r.after}`, r.delta);
+      $("opSet").value = "";
+      flash("opFlash", "Conteo puesto en " + v + ".");
+    });
+
+    $("btnGoal").addEventListener("click", async () => {
+      if (!needDb()) return;
+      const v = Math.floor(num($("opGoal").value));
+      if (v < 1) { $("opGoal").focus(); return; }
+      const before = goal;
+      await set(rf("goal"), v);
+      addHistory("info", `Meta cambiada de ${before} a ${v}`, null);
+      $("opGoal").value = "";
+      flash("opFlash", "Meta cambiada a " + v + ".");
+    });
+
+    $("btnReset").addEventListener("click", async () => {
+      if (!needDb()) return;
+      if (!confirm(`¿Reiniciar el conteo a 0? Ahora está en ${count}.`)) return;
+      const r = await runOp({ t: "set", v: 0 });
+      if (!r) { flash("opFlash", "No se pudo guardar. Revisa la conexión."); return; }
+      addHistory("manual", `Reiniciado a 0 (estaba en ${r.before})`, r.delta);
+      flash("opFlash", "Conteo en 0.");
+    });
+
+    /* ---------------- probar animaciones ---------------- */
+    const fxTest = (type) => { if (!needDb()) return; set(rf("fx"), { type, id: randId(8), ts: now() }); };
+    $("btnTestBounce").addEventListener("click", () => { bounce(); fxTest("bounce"); });
+    $("btnTestComplete").addEventListener("click", () => { FX.celebrate(); fxTest("complete"); });
+
+    /* ---------------- historial ---------------- */
+    const histEl = $("hist");
+    const fmtTime = (ts) => {
+      const d = new Date(ts);
+      const t = d.toLocaleTimeString("es-MX", { hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false });
+      return d.toDateString() === new Date().toDateString() ? t : d.toLocaleDateString("es-MX", { day: "2-digit", month: "2-digit" }) + " " + t;
+    };
+    const KINDS = { auto: "auto", anon: "anon", manual: "manual", warn: "warn", info: "info" };
+    // páginas de 300; para saber si hay más antiguos se pide uno extra
+    const PAGE = 300;
+    let histPage = 0, histAll = [], histOff = null;
+    function listenHist() {
+      if (!db) return;
+      if (histOff) histOff();
+      histOff = onValue(query(rf("history"), limitToLast(PAGE * (histPage + 1) + 1)), (snap) => {
+        const rows = [];
+        snap.forEach((c) => { const v = c.val(); if (v) rows.push(v); });
+        histAll = rows.reverse();
+        renderHist();
+      });
+    }
+    function renderHist() {
+      const from = histPage * PAGE, rows = histAll.slice(from, from + PAGE);
+      const more = histAll.length > from + PAGE;
+      $("histInfo").textContent = rows.length
+        ? `Página ${histPage + 1} · ${from + 1} a ${from + rows.length}${histPage === 0 ? " (lo más nuevo)" : ""}`
+        : (histPage ? "No hay más" : "");
+      $("histNewer").disabled = histPage === 0;
+      $("histOlder").disabled = !more;
+      histEl.innerHTML = rows.map((h) => {
+        const kind = KINDS[h.kind] || "info";
+        let d = "";
+        if (h.delta != null) d = (h.delta >= 0 ? "+" : "-") + Math.abs(h.delta);
+        else if (kind === "warn") d = "revisar";
+        const note = h.note ? `<span class="hn">${esc(h.note)}</span>` : "";
+        const by = h.by ? `<em>${esc(kind === "auto" || kind === "anon" ? "contó: " + h.by : h.by)}</em>` : "";
+        return `<div class="hrow ${kind}"><span class="hx">${esc(h.text)}</span><span class="hd">${d}</span>${note}<span class="ht">${fmtTime(h.ts)}${by}</span></div>`;
+      }).join("");
+    }
+    $("histOlder").addEventListener("click", () => { histPage++; listenHist(); histEl.scrollTop = 0; });
+    $("histNewer").addEventListener("click", () => { histPage = Math.max(0, histPage - 1); listenHist(); histEl.scrollTop = 0; });
+    listenHist();
+    $("btnClearHist").addEventListener("click", () => {
+      if (!needDb()) return;
+      if (confirm("¿Borrar todo el historial? El conteo no se toca.")) set(rf("history"), null);
+    });
+
+    /* ---------------- conexiones ---------------- */
+    /* ---------------- luces de los overlays ---------------- */
+    // verde = hay un overlay de OBS con clave y con el chat conectado; rojo = ese overlay no está contando
+    function setLight(id, list, okText) {
+      const obs = list.filter((p) => p && String(p.where || "").startsWith("Overlay"));
+      const live = obs.some((p) => p.irc);
+      $(id).classList.toggle("on", live);
+      $(id + "Tx").textContent = live ? (okText || "contando") : obs.length ? "sin chat" : (okText ? "no está en pantalla" : "sin contar");
+    }
+    onValue(ref(db, "presence"), (snap) => setLight("lightTimer", Object.values(snap.val() || {})), () => setLight("lightTimer", []));
+    onValue(rf("presence"), (snap) => setLight("lightMeta", Object.values(snap.val() || {}), "en pantalla"), () => setLight("lightMeta", [], "en pantalla"));
+    hooks.presence = () => {
+      const list = Object.entries(presence).map(([id, p]) => ({ id, ...(p || {}) }));
+      const el = $("connList");
+      const live = list.filter((p) => p.irc).length;
+      $("connSummary").textContent = db ? `${live} overlay(s) en pantalla · ${list.length} conectados` : "sin Firebase";
+      if (!list.length) { el.innerHTML = `<div class="status err"><span class="dot"></span>Nadie conectado</div>`; return; }
+      el.innerHTML = list.map((p) => `<div class="status ${p.irc ? "live" : ""}"><span class="dot"></span>${esc(p.where)}${p.id === INSTANCE ? " (este)" : ""}${p.irc ? " · en pantalla" : ""}</div>`).join("");
+    };
+    hooks.irc = () => hooks.presence();
+    hooks.presence();
+
+    /* ---------------- estilo ---------------- */
+    const FIELDS = [
+      ["Texto", [
+        ["goalTitle", "Título", "text", { wide: true }],
+        ["textpos", "Posición del texto", "select", { opts: { bottom: "Abajo", right: "Derecha", freehand: "Libre" } }],
+        ["fontName", "Fuente (Google Fonts)", "text"],
+        ["textAlign", "Alineación (libre)", "select", { opts: { left: "Izquierda", center: "Centro", right: "Derecha" } }],
+        ["titleFontSize", "Tamaño del título", "range", { min: 8, max: 60, step: 1 }],
+        ["fontSize", "Tamaño del número", "range", { min: 8, max: 60, step: 1 }],
+        ["freehandX", "Texto libre X", "range", { min: -200, max: 400, step: 5 }],
+        ["freehandY", "Texto libre Y", "range", { min: -100, max: 500, step: 5 }],
+        ["titleFontWeight", "Grosor del título", "select", { opts: { 300: "Light", 400: "Normal", 500: "Medium", 600: "Semi-Bold", 700: "Bold" } }],
+        ["fontWeight", "Grosor del número", "select", { opts: { 300: "Light", 400: "Normal", 500: "Medium", 600: "Semi-Bold", 700: "Bold" } }],
+        ["titleFontColor", "Color del título", "color"],
+        ["fontColor", "Color del número", "color"],
+        ["glowcolor", "Brillo del texto", "color"],
+        ["textglow", "Brillo del texto", "check"],
+        ["rainbowTextGlow", "Brillo del texto arcoíris", "check"]
+      ]],
+      ["Tamaño y posición en OBS", [
+        ["widgetScale", "Tamaño", "range", { min: 0.5, max: 2, step: 0.1 }],
+        ["widgetPosX", "Posición X", "range", { min: -200, max: 1920, step: 5 }],
+        ["widgetPosY", "Posición Y", "range", { min: -200, max: 1080, step: 5 }],
+        ["backop", "Opacidad del fondo", "range", { min: 0, max: 9, step: 1 }],
+        ["mirror", "Espejo (voltear)", "check"]
+      ]],
+      ["Calabaza", [
+        ["bordeColor", "Color del borde", "color"],
+        ["bordeGlow", "Brillo del borde", "color"],
+        ["faceLiquidColor", "Líquido de ojos, nariz y boca", "color"],
+        ["stemBorderColor", "Borde del tallo", "color"],
+        ["stemBorderGlow", "Brillo del tallo", "color"],
+        ["stemLiquidColor", "Líquido del tallo", "color"],
+        ["faceTint", "Color en la cara", "select", { opts: { block: "Activado", none: "Apagado" } }]
+      ]],
+      ["Líquido", [
+        ["fillcolor1", "Color 1", "color"],
+        ["fillcolor2", "Color 2", "color"],
+        ["glowcolb", "Brillo del líquido", "color"],
+        ["waveSpeed", "Velocidad de la ola", "range", { min: 1, max: 8, step: 0.5 }],
+        ["huerotat", "Color de burbujas", "range", { min: 0, max: 36, step: 1 }],
+        ["fillglow", "Brillo del líquido", "check"],
+        ["rainbowFill", "Líquido arcoíris", "check"],
+        ["rainbowGlow", "Brillo arcoíris", "check"]
+      ]],
+      ["Efectos", [
+        ["candleColor", "Color de la vela", "color"],
+        ["candle", "Vela que parpadea", "check"],
+        ["progressiveGlow", "Brillo que crece con el progreso", "check"],
+        ["bounce", "Rebote con cada sub", "check"],
+        ["completeFx", "Murciélagos y destellos al completar", "check"],
+        ["circleend", "Video de meta completa", "check"],
+        ["particles", "Burbujas", "check"],
+        ["waterEffect", "Video de efecto en el líquido", "check"]
+      ]],
+      ["Videos", [
+        ["petalsVideo", "Video de burbujas (URL)", "text", { wide: true }],
+        ["completeVideo", "Video de meta completa (URL)", "text", { wide: true }],
+        ["waterEffectVideo", "Video del líquido (URL)", "text", { wide: true }]
+      ]]
+    ];
+    const form = $("styleForm");
+    form.innerHTML = FIELDS.map(([g, list]) => `<div class="sgroup"><div class="sublabel">${esc(g)}</div><div class="sgrid">` + list.map(([k, label, type, o = {}]) => {
+      const id = "st_" + k;
+      if (type === "check") return `<label class="check"><input type="checkbox" id="${id}" data-k="${k}"> ${esc(label)}</label>`;
+      let input;
+      if (type === "select") input = `<select id="${id}" data-k="${k}">` + Object.entries(o.opts).map(([v, t]) => `<option value="${esc(v)}">${esc(t)}</option>`).join("") + `</select>`;
+      else if (type === "range") input = `<input type="range" id="${id}" data-k="${k}" min="${o.min}" max="${o.max}" step="${o.step}">`;
+      else if (type === "color") input = `<input type="color" id="${id}" data-k="${k}">`;
+      else input = `<input type="text" id="${id}" data-k="${k}">`;
+      const lab = type === "range" ? `${esc(label)} <b id="v_${k}"></b>` : esc(label);
+      return `<div class="field${o.wide ? " wide" : ""}"><label for="${id}">${lab}</label>${input}</div>`;
+    }).join("") + `</div></div>`).join("");
+
+    const fieldEls = [...form.querySelectorAll("[data-k]")];
+    hooks.style = () => {
+      for (const el of fieldEls) {
+        if (document.activeElement === el) continue;
+        const k = el.dataset.k, v = S[k];
+        if (el.type === "checkbox") el.checked = !!v;
+        else el.value = v;
+        const lab = $("v_" + k); if (lab) lab.textContent = v;
+      }
+    };
+    hooks.style();
+    let styleTimer = null;
+    for (const el of fieldEls) {
+      const ev = (el.type === "text") ? "change" : "input";
+      el.addEventListener(ev, () => {
+        const k = el.dataset.k, d = DEFAULT_STYLE[k];
+        let v = el.type === "checkbox" ? el.checked : el.value;
+        if (typeof d === "number") v = num(v, d);
+        S = { ...S, [k]: v };
+        const lab = $("v_" + k); if (lab) lab.textContent = v;
+        renderWidget();
+        clearTimeout(styleTimer);
+        if (db) styleTimer = setTimeout(() => set(rf("style"), S), 150);
+      });
+    }
+    $("btnStyleReset").addEventListener("click", () => {
+      if (!confirm("¿Volver al estilo original de la calabaza?")) return;
+      S = { ...DEFAULT_STYLE };
+      renderWidget(); hooks.style();
+      if (db) set(rf("style"), S);
+      flash("styleFlash", "Estilo restablecido.");
+    });
+
+    /* ---------------- descargar overlay ---------------- */
+    $("btnDownload").addEventListener("click", async () => {
+      let src;
+      try {
+        const r = await fetch(location.pathname, { cache: "no-store" });
+        if (!r.ok) throw new Error();
+        src = await r.text();
+      } catch (e) { flash("styleFlash", "No pude leer el archivo. Ábrelo desde GitHub Pages, no como archivo local."); return; }
+      const cut = (a, b) => { src = src.replace(new RegExp(a + "[\\s\\S]*?" + b, "g"), ""); };
+      cut("<!--PANEL-" + "HTML-BEGIN-->", "<!--PANEL-" + "HTML-END-->");
+      cut("\\/\\*PANEL-" + "CSS-BEGIN\\*\\/", "\\/\\*PANEL-" + "CSS-END\\*\\/");
+      cut("\\/\\*PANEL-" + "JS-BEGIN\\*\\/", "\\/\\*PANEL-" + "JS-END\\*\\/");
+      const baked = "<scr" + "ipt>window.__OVERLAY = " + JSON.stringify({ style: S }).replace(/</g, "\\u003c") + ";</scr" + "ipt>\n";
+      src = src.replace('<script type="module">', baked + '<script type="module">');
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(new Blob([src], { type: "text/html" }));
+      a.download = "meta-subs-overlay.html";
+      a.click();
+      setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+      flash("styleFlash", "Overlay de la meta descargado. Para que cuente, ábrelo con #k=clave al final.");
+    });
+
+    /* ---------------- respaldo ---------------- */
+    $("btnExport").addEventListener("click", async () => {
+      if (!needDb()) return;
+      const [t, g, st, h] = await Promise.all([get(rf("tally")), get(rf("goal")), get(rf("style")), get(rf("history"))]);
+      const tv = t.val() || {};
+      const data = { exportado: new Date().toISOString(), conteo: num(tv.count), meta: g.val(), estilo: st.val(), historial: h.val() };
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(new Blob([JSON.stringify(data, null, 2)], { type: "application/json" }));
+      a.download = "respaldo-meta-subs-" + new Date().toISOString().slice(0, 10) + ".json";
+      a.click();
+      setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+    });
+  }
+  /*PANEL-JS-END*/
+</script>
+</body>
+</html>
