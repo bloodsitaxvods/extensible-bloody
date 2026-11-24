@@ -96,14 +96,17 @@
   .brand h1 { font-size: 20px; letter-spacing: 0.3em; color: var(--accent); }
   .brand span { font-size: 13px; letter-spacing: 0.15em; color: var(--muted); }
 
+  /* La vista previa es una copia a escala del lienzo de OBS (1920 x 1080): lo que sale de la imagen
+     del marco (como el multiplicador debajo del timer) también se ve aquí, igual que en el directo */
   .preview {
     background: repeating-conic-gradient(#1a0c20 0% 25%, #12071a 0% 50%) 50% / 20px 20px;
     border: 1px solid var(--border); border-radius: 14px; overflow: hidden;
-    display: flex; justify-content: center;
+    position: relative; aspect-ratio: 16 / 9;
   }
-  .preview .stage { width: 100%; }
-  .preview .stage img.bg { width: 100%; }
-  .preview .stage.nobg { aspect-ratio: 16 / 6; }
+  .preview .obs1080 { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; transform-origin: 0 0;
+    display: flex; align-items: center; justify-content: center; }
+  .preview .stage img.bg { max-width: 1920px; max-height: 1080px; }
+  .preview .stage.nobg { width: 1920px; height: 1080px; }
 
   /* play / pausa grandes */
   .transport { display: flex; justify-content: center; align-items: center; gap: 28px; margin: 24px 0 8px; }
@@ -191,7 +194,7 @@
     display: grid; grid-template-columns: 150px minmax(90px, 1fr) auto auto; gap: 10px; align-items: center;
     background: var(--bg); border: 1px solid var(--border); border-radius: 11px; padding: 10px 10px 10px 16px;
   }
-  .adj-row .unit { font-size: 13px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--text); }
+  .adj-row .unit { font-size: 20px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; color: var(--text); }
   .adj-row .unit small { display: block; font-size: 11px; font-weight: 400; letter-spacing: .02em; text-transform: none; color: var(--accent-2); margin-top: 3px; min-height: 13px; }
   .adj-row input { text-align: center; font-size: 20px; font-weight: 700; padding: 10px 6px; background: var(--panel); }
   .adj-row button { min-width: 112px; padding: 13px 14px; }
@@ -223,7 +226,16 @@
   .hms-row { display: flex; gap: 12px; align-items: stretch; flex-wrap: wrap; }
   .hms { display: flex; align-items: center; gap: 6px; flex: 1; min-width: 260px; }
   .hms .cell { flex: 1; display: flex; flex-direction: column; gap: 6px; align-items: stretch; }
-  .hms .cell label { font-size: 10px; letter-spacing: .16em; color: var(--muted); text-align: center; text-transform: uppercase; }
+  .hms .cell label { font-size: 15px; font-weight: 700; letter-spacing: .14em; color: var(--text); text-align: center; text-transform: uppercase; }
+  /* atajos: quitar a la izquierda, agregar a la derecha, todos del mismo tamaño */
+  .qadj { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 14px; }
+  .qadj .qlbl { font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
+  .qadj .qgrp { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; flex: 1 1 260px; }
+  .qadj button { padding: 10px 0; font-size: 14px; font-weight: 700; min-width: 0; }
+  .qadj button.qm { color: var(--danger); background: transparent; border-color: rgba(255,92,122,.45); }
+  .qadj button.qm:hover { border-color: var(--danger); background: rgba(255,92,122,.08); }
+  .qadj button.qp { color: var(--accent-2); background: transparent; border-color: rgba(255,154,213,.45); }
+  .qadj button.qp:hover { border-color: var(--accent-2); background: rgba(255,154,213,.1); }
   .hms input { text-align: center; font-size: 26px; font-weight: 700; padding: 12px 4px; font-variant-numeric: tabular-nums; }
   .hms .sep { font-size: 28px; font-weight: 700; color: var(--muted); padding-top: 18px; }
   .hms-row > button { align-self: flex-end; padding: 18px 22px; }
@@ -412,7 +424,7 @@
     <div class="light" id="lightMeta" title="Overlay de la meta en OBS con clave (solo muestra; las subs las cuenta el timer)"><span class="ld"></span>Overlay meta <small id="lightMetaTx">sin contar</small></div>
   </div>
 
-  <div class="preview">
+  <div class="preview" id="preview"><div class="obs1080" id="obs1080">
 <!--STAGE-START-->
     <div class="stage nobg" id="stage">
       <img class="bg" id="bgImg" alt="">
@@ -421,7 +433,7 @@
       <div class="tmr2" id="tmr2"><span class="t-back"><span class="x2l">x2</span><span class="x2t">00:00</span></span><span class="t-front"><span class="x2l">x2</span><span class="x2t">00:00</span></span></div>
     </div>
 <!--STAGE-END-->
-  </div>
+  </div></div>
 
   <!-- PLAY / PAUSA -->
   <div class="transport">
@@ -472,6 +484,16 @@
         <button class="minus" data-adj="1" data-sign="-1">- QUITAR</button>
         <button class="primary" data-adj="1" data-sign="1">+ AGREGAR</button>
       </div>
+    </div>
+    <div class="qadj">
+      <span class="qlbl">Quitar</span>
+      <div class="qgrp">
+        <button class="qm" data-qadj="-3600">-1h</button><button class="qm" data-qadj="-1800">-30m</button><button class="qm" data-qadj="-600">-10m</button><button class="qm" data-qadj="-300">-5m</button><button class="qm" data-qadj="-60">-1m</button>
+      </div>
+      <div class="qgrp">
+        <button class="qp" data-qadj="60">+1m</button><button class="qp" data-qadj="300">+5m</button><button class="qp" data-qadj="600">+10m</button><button class="qp" data-qadj="1800">+30m</button><button class="qp" data-qadj="3600">+1h</button>
+      </div>
+      <span class="qlbl">Agregar</span>
     </div>
 
     <hr>
@@ -543,6 +565,7 @@
       <input type="datetime-local" id="upStartInput">
       <button class="fit" id="btnUpSave">GUARDAR INICIO</button>
       <button class="fit primary" id="btnUpNow">EMPEZÓ AHORA</button>
+      <button class="fit ghost" id="btnUpReset">REINICIAR A 0</button>
     </div>
     <p class="hint">La fecha y hora se escriben en la hora de tu dispositivo.</p>
   </div>
@@ -664,6 +687,10 @@
       <div class="field"><label>Separación del multiplicador <b id="vX2Gap"></b></label><input type="range" id="stX2Gap" min="0" max="200" step="1"></div>
       <div class="field"><label>Tamaño tiempo total <b id="vUpSize"></b>%</label><input type="range" id="stUpSize" min="20" max="150" step="1"></div>
       <div class="field"><label>Separación tiempo total <b id="vUpGap"></b></label><input type="range" id="stUpGap" min="0" max="200" step="1"></div>
+      <div class="field"><label>Color del multiplicador</label><input type="color" id="stX2Color"></div>
+      <div class="field"><label>Borde del multiplicador</label><input type="color" id="stX2Stroke"></div>
+      <div class="field"><label>Color tiempo total</label><input type="color" id="stUpColor"></div>
+      <div class="field"><label>Borde tiempo total</label><input type="color" id="stUpStroke"></div>
     </div>
     <div class="row" style="margin-top:16px;">
       <button class="ghost" id="btnStyleReset">Restablecer estilo</button>
@@ -873,7 +900,9 @@
     glow: "#FF4FB8", glowSize: 22,
     font: "fredoka", size: 12, x: 50, y: 50, spacing: 4,
     x2Size: 55, x2Gap: 62,    // x2: % del tamaño del timer principal y distancia debajo de él
-    upSize: 45, upGap: 62     // tiempo total: % del tamaño y distancia encima del timer principal
+    upSize: 45, upGap: 62,    // tiempo total: % del tamaño y distancia encima del timer principal
+    x2Color: "#E3101F", x2Stroke: "#FFFFFF",   // multiplicador: número y etiqueta en rojo, borde blanco
+    upColor: "#4A0F3A", upStroke: "#FFFFFF"    // tiempo total
   };
   let style = { ...DEFAULT_STYLE };
 
@@ -970,6 +999,14 @@
     tBack.style.textShadow = st.glowSize > 0
       ? `0 0 ${st.glowSize / 100}em ${st.glow}, 0 0 ${st.glowSize / 50}em ${st.glow}`
       : "none";
+    // colores del multiplicador y del tiempo total
+    const pinta = (id, front, back) => {
+      const el = $(id); if (!el) return;
+      el.querySelectorAll(".t-front").forEach((x) => { x.style.color = front; });
+      el.querySelectorAll(".t-back").forEach((x) => { x.style.color = back; x.style.webkitTextStrokeColor = back; });
+    };
+    pinta("tmr2", st.x2Color || DEFAULT_STYLE.x2Color, st.x2Stroke || DEFAULT_STYLE.x2Stroke);
+    pinta("tmr0", st.upColor || DEFAULT_STYLE.upColor, st.upStroke || DEFAULT_STYLE.upStroke);
     fitSize();
   }
 
@@ -1876,6 +1913,24 @@
     Object.values(ADJ_INPUT).forEach((id) => $(id).addEventListener("input", renderAdjConv));
     renderAdjConv();
 
+    // atajos +1m, -5m, etc.
+    document.querySelectorAll("[data-qadj]").forEach((b) => {
+      b.addEventListener("click", async () => {
+        const sec = Number(b.dataset.qadj), label = fmtDur(Math.abs(sec));
+        if (sec > 0) {
+          await applyDelta(sec * 1000);
+          addHistory("manual", `Agregado a mano: ${label}`, sec * 1000);
+        } else {
+          const before = currentRemaining();
+          await applyDelta(sec * 1000);
+          addHistory("manual", `Quitado a mano: ${label}`, -Math.min(before, -sec * 1000));
+        }
+      });
+    });
+    // vista previa: el lienzo de 1920 x 1080 se escala al ancho del cuadro
+    const obs1080 = $("obs1080");
+    new ResizeObserver(() => { obs1080.style.transform = `scale(${$("preview").clientWidth / 1920})`; }).observe($("preview"));
+
     document.querySelectorAll("[data-adj]").forEach((b) => {
       b.addEventListener("click", async () => {
         const unit = Number(b.dataset.adj), sign = Number(b.dataset.sign);
@@ -1915,6 +1970,12 @@
       if (uptime.start > 0 && !confirm("¿Reiniciar el tiempo total desde ahora?")) return;
       await update(uptimeRef, { start: now() });
       addHistory("manual", "Inicio del directo marcado ahora", null);
+    });
+    $("btnUpReset").addEventListener("click", async () => {
+      if (!(uptime.start > 0)) return;
+      if (!confirm("¿Reiniciar el tiempo total a 00:00:00? Queda detenido hasta que le des a EMPEZÓ AHORA o guardes un inicio.")) return;
+      await update(uptimeRef, { start: 0 });
+      addHistory("manual", "Tiempo total reiniciado a 0", null);
     });
     $("btnUpSave").addEventListener("click", async () => {
       const v = $("upStartInput").value;
@@ -2021,7 +2082,7 @@
         if (rem <= 0) rem = Math.round(Math.max(0, num($("boostMin").value)) * 60000);  // sin tiempo puesto: usa la casilla
         if (rem <= 0) return cur;
         started = true; mins = Math.round(rem / 60000 * 10) / 10;
-        return { ...cur, isRunning: true, endTime: now() + rem, remainingMs: rem };
+        return { ...cur, isRunning: true, endTime: now() + rem, remainingMs: rem, visible: true };
       });
       if (started) {
         const on = Object.keys(boost.cats).filter((k) => boost.cats[k]);
@@ -2303,7 +2364,8 @@
     /* ---------------- estilo ---------------- */
     const styleInputs = {
       color: "stColor", stroke: "stStroke", glow: "stGlow", strokeW: "stStrokeW", glowSize: "stGlowSize",
-      font: "stFont", size: "stSize", x: "stX", y: "stY", spacing: "stSpacing", x2Size: "stX2Size", x2Gap: "stX2Gap", upSize: "stUpSize", upGap: "stUpGap"
+      font: "stFont", size: "stSize", x: "stX", y: "stY", spacing: "stSpacing", x2Size: "stX2Size", x2Gap: "stX2Gap", upSize: "stUpSize", upGap: "stUpGap",
+      x2Color: "stX2Color", x2Stroke: "stX2Stroke", upColor: "stUpColor", upStroke: "stUpStroke"
     };
     const labels = { strokeW: "vStrokeW", glowSize: "vGlowSize", size: "vSize", x: "vX", y: "vY", spacing: "vSpacing", x2Size: "vX2Size", x2Gap: "vX2Gap", upSize: "vUpSize", upGap: "vUpGap" };
     hooks.style = () => {
