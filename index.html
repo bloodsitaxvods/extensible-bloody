@@ -46,6 +46,9 @@
   .tmr .t-front { position: relative; }
   /* los textos siempre por encima de las imágenes del marco */
   .tmr, .tmr0, .tmr2 { z-index: 5; }
+  .tmr.hide-main { visibility: hidden; }                       /* en OBS desaparece */
+  body:not(.display) .tmr.hide-main { visibility: visible; opacity: .22; }  /* en el panel se ve tenue */
+  #btnMainShow.on { border-color: var(--accent-2); color: var(--accent-2); background: rgba(255,154,213,.1); }
   /* tiempo total del directo, encima del timer principal */
   .tmr0 { position: absolute; transform: translate(-50%, -100%); white-space: nowrap; line-height: 1;
     font-variant-numeric: tabular-nums; display: none; }
@@ -429,7 +432,8 @@
       <svg viewBox="0 0 24 24"><rect x="5" y="4" width="5" height="16" rx="1.5"/><rect x="14" y="4" width="5" height="16" rx="1.5"/></svg>
     </button>
   </div>
-  <div class="run-status"><div class="status" id="runStatus"><span class="dot"></span><span id="runText">PAUSADO</span></div></div>
+  <div class="run-status"><div class="status" id="runStatus"><span class="dot"></span><span id="runText">PAUSADO</span></div>
+    <button class="fit ghost" id="btnMainShow" style="margin-left:10px;vertical-align:middle" title="Esconde solo el número grande en OBS; el tiempo sigue corriendo y contando">OCULTAR TIMER DEL OVERLAY</button></div>
 
   <!-- PON EL TIEMPO EXACTO -->
   <div class="block">
@@ -1086,11 +1090,13 @@
 
   /* ================= TIEMPO TOTAL DEL DIRECTO ================= */
   // Cuenta hacia adelante desde el inicio guardado; no se pausa. Solo se muestra u oculta.
-  const uptimeRef = ref(db, "uptime");      // { start: ms, visible: bool }  se pone desde el panel
-  let uptime = { start: 0, visible: false };
+  // hideMain: esconde el timer principal en OBS (sigue corriendo y contando)
+  const uptimeRef = ref(db, "uptime");      // { start: ms, visible: bool, hideMain: bool }  se pone desde el panel
+  let uptime = { start: 0, visible: false, hideMain: false };
   onValue(uptimeRef, (snap) => {
     const v = snap.val() || {};
-    uptime = { start: num(v.start), visible: !!v.visible };
+    uptime = { start: num(v.start), visible: !!v.visible, hideMain: !!v.hideMain };
+    tmr.classList.toggle("hide-main", uptime.hideMain);
     if (hooks.uptime) hooks.uptime();
   });
   const uptimeMs = () => uptime.start > 0 ? Math.max(0, now() - uptime.start) : 0;
@@ -1111,12 +1117,14 @@
   }
 
   /* ================= MULTIPLICADOR (x2, x3, x4...) ================= */
-  let boost = { isRunning: false, endTime: 0, remainingMs: 0, visible: false, cats: {}, factor: 2 };
+  // todas las categorías cuentan por defecto; solo se quitan las que desmarques
+  const ALL_CATS = { t1: true, t2: true, t3: true, bits: true, follow: true, raid: true, donation: true, donationMxn: true };
+  let boost = { isRunning: false, endTime: 0, remainingMs: 0, visible: false, cats: { ...ALL_CATS }, factor: 2 };
   const cleanFactor = (f) => Math.min(20, Math.max(1, Math.round(num(f, 2) * 10) / 10));
   const fLabel = (f) => "x" + String(cleanFactor(f));
   onValue(boostRef, (snap) => {
     const v = snap.val() || {};
-    boost = { isRunning: !!v.isRunning, endTime: num(v.endTime), remainingMs: num(v.remainingMs), visible: !!v.visible, cats: v.cats || {}, factor: cleanFactor(v.factor != null ? v.factor : 2) };
+    boost = { isRunning: !!v.isRunning, endTime: num(v.endTime), remainingMs: num(v.remainingMs), visible: !!v.visible, cats: { ...ALL_CATS, ...(v.cats || {}) }, factor: cleanFactor(v.factor != null ? v.factor : 2) };
     renderFactorLabel();
     if (hooks.boost) hooks.boost();
   });
@@ -1893,6 +1901,8 @@
     hooks.uptime = () => {
       $("btnUpShow").classList.toggle("on", uptime.visible);
       $("btnUpShow").textContent = uptime.visible ? "OCULTAR DEL OVERLAY" : "MOSTRAR EN OVERLAY";
+      $("btnMainShow").classList.toggle("on", uptime.hideMain);
+      $("btnMainShow").textContent = uptime.hideMain ? "MOSTRAR TIMER EN OVERLAY" : "OCULTAR TIMER DEL OVERLAY";
       $("upStartLbl").textContent = uptime.start > 0
         ? new Date(uptime.start).toLocaleString("es-MX", { timeZone: "America/Lima", day: "2-digit", month: "2-digit", year: "numeric", hour: "numeric", minute: "2-digit" }) + " (hora Perú)"
         : "Sin definir";
@@ -1900,6 +1910,7 @@
     };
     setInterval(() => { $("upClock").textContent = fmtUp(uptimeMs()); }, 250);
     $("btnUpShow").addEventListener("click", () => update(uptimeRef, { visible: !uptime.visible }));
+    $("btnMainShow").addEventListener("click", () => update(uptimeRef, { hideMain: !uptime.hideMain }));
     $("btnUpNow").addEventListener("click", async () => {
       if (uptime.start > 0 && !confirm("¿Reiniciar el tiempo total desde ahora?")) return;
       await update(uptimeRef, { start: now() });
