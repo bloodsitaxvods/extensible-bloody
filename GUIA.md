@@ -93,7 +93,7 @@ En el mismo panel, sección **Meta de subs**:
 
 1. En el panel del timer, abre **Link para OBS** y escribe la **clave del overlay** (paso 4).
 2. **COPIAR LINK TIMER CON CLAVE** > OBS > Fuentes > `+` > **Navegador** > pega en URL. Ancho 1920, alto 1080.
-3. **COPIAR LINK META CON CLAVE** > otra fuente de **Navegador** > pega el link. Mismo tamaño.
+3. **COPIAR LINK META CON CLAVE** > otra fuente de **Navegador** > pega el link. Tamaño **640 x 640**: la meta se centra sola dentro de la fuente; después la mueves a donde quieras en la escena.
 4. En las dos fuentes, **desmarca** "Apagar fuente cuando no esté visible". Si no, el timer deja de contar cuando cambias de escena.
 5. Para que salgan en varias escenas: clic derecho > Copiar > en la otra escena, clic derecho > **Pegar (referencia)**. No uses "Pegar (duplicado)".
 

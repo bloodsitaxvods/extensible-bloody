@@ -212,7 +212,31 @@
     }
     applyClasses(v);
     updateProgress();
+    recenter();
   }
+
+  /* Centrado: mide lo que se ve de la meta (el contenedor y su texto) y lo pone en el centro
+     de la fuente de OBS, sea del tamaño que sea. Tamaño recomendado en OBS: 640 x 640.
+     Los murciélagos vuelan por encima; si la fuente es chica, se cortan al final de su vuelo. */
+  function recenter() {
+    if (PREVIEW) return;
+    widgetEl.style.transform = "none";
+    const parts = [".object-image"];
+    if (cleanStyle(S).textpos === "bottom") parts.push(".text-bottom");
+    let l = Infinity, t = Infinity, r = -Infinity, b = -Infinity;
+    parts.forEach((sel) => {
+      const el = q1(sel); if (!el) return;
+      const k = el.getBoundingClientRect();
+      if (!k.width && !k.height) return;
+      l = Math.min(l, k.left); t = Math.min(t, k.top); r = Math.max(r, k.right); b = Math.max(b, k.bottom);
+    });
+    if (!isFinite(l)) return;
+    const dx = Math.round(window.innerWidth / 2 - (l + r) / 2);
+    const dy = Math.round(window.innerHeight / 2 - (t + b) / 2);
+    widgetEl.style.transform = `translate(${dx}px, ${dy}px)`;
+  }
+  window.addEventListener("resize", recenter);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(recenter);
 
   const qa = (sel) => widgetEl.querySelectorAll(sel);
   const q1 = (sel) => widgetEl.querySelector(sel);
