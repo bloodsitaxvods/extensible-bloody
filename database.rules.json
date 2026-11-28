@@ -1,0 +1,124 @@
+{
+  "rules": {
+    ".read": false,
+    ".write": false,
+    "admins": {
+      "$uid": {
+        ".read": "auth != null && auth.uid === $uid",
+        ".write": false
+      }
+    },
+    "counters": {
+      ".read": false,
+      ".write": false
+    },
+    "timer": {
+      ".read": true,
+      ".write": "(auth != null && root.child('admins').child(auth.uid).val() === true) || (auth != null && root.child('counters').child(auth.uid).val() === true)"
+    },
+    "boost": {
+      ".read": true,
+      ".write": "(auth != null && root.child('admins').child(auth.uid).val() === true) || (auth != null && root.child('counters').child(auth.uid).val() === true)"
+    },
+    "metaSubs": {
+      ".read": true,
+      ".write": "(auth != null && root.child('admins').child(auth.uid).val() === true) || (auth != null && root.child('counters').child(auth.uid).val() === true)"
+    },
+    "metaBits": {
+      ".read": true,
+      ".write": "(auth != null && root.child('admins').child(auth.uid).val() === true) || (auth != null && root.child('counters').child(auth.uid).val() === true)"
+    },
+    "uptime": {
+      ".read": true,
+      ".write": "auth != null && root.child('admins').child(auth.uid).val() === true"
+    },
+    "style": {
+      ".read": true,
+      ".write": "auth != null && root.child('admins').child(auth.uid).val() === true"
+    },
+    "frameList": {
+      ".read": true,
+      ".write": "auth != null && root.child('admins').child(auth.uid).val() === true"
+    },
+    "frameData": {
+      ".read": true,
+      ".write": "auth != null && root.child('admins').child(auth.uid).val() === true"
+    },
+    "bg": {
+      ".read": true,
+      ".write": "auth != null && root.child('admins').child(auth.uid).val() === true"
+    },
+    "prices": {
+      ".read": "(auth != null && root.child('admins').child(auth.uid).val() === true) || (auth != null && root.child('counters').child(auth.uid).val() === true)",
+      ".write": "auth != null && root.child('admins').child(auth.uid).val() === true"
+    },
+    "config": {
+      ".read": "(auth != null && root.child('admins').child(auth.uid).val() === true) || (auth != null && root.child('counters').child(auth.uid).val() === true)",
+      ".write": "auth != null && root.child('admins').child(auth.uid).val() === true"
+    },
+    "history": {
+      ".read": "(auth != null && root.child('admins').child(auth.uid).val() === true) || (auth != null && root.child('counters').child(auth.uid).val() === true)",
+      ".write": "(auth != null && root.child('admins').child(auth.uid).val() === true) || (auth != null && root.child('counters').child(auth.uid).val() === true)",
+      ".indexOn": "ts"
+    },
+    "events": {
+      ".read": "(auth != null && root.child('admins').child(auth.uid).val() === true) || (auth != null && root.child('counters').child(auth.uid).val() === true)",
+      ".write": "(auth != null && root.child('admins').child(auth.uid).val() === true) || (auth != null && root.child('counters').child(auth.uid).val() === true)",
+      ".indexOn": ".value"
+    },
+    "follows": {
+      ".read": "(auth != null && root.child('admins').child(auth.uid).val() === true) || (auth != null && root.child('counters').child(auth.uid).val() === true)",
+      ".write": "(auth != null && root.child('admins').child(auth.uid).val() === true) || (auth != null && root.child('counters').child(auth.uid).val() === true)"
+    },
+    "presence": {
+      ".read": "(auth != null && root.child('admins').child(auth.uid).val() === true) || (auth != null && root.child('counters').child(auth.uid).val() === true)",
+      ".write": "(auth != null && root.child('admins').child(auth.uid).val() === true) || (auth != null && root.child('counters').child(auth.uid).val() === true)"
+    },
+    "followLeader": {
+      ".read": "(auth != null && root.child('admins').child(auth.uid).val() === true) || (auth != null && root.child('counters').child(auth.uid).val() === true)",
+      ".write": "(auth != null && root.child('admins').child(auth.uid).val() === true) || (auth != null && root.child('counters').child(auth.uid).val() === true)"
+    },
+    "followStatus": {
+      ".read": "(auth != null && root.child('admins').child(auth.uid).val() === true) || (auth != null && root.child('counters').child(auth.uid).val() === true)",
+      ".write": "(auth != null && root.child('admins').child(auth.uid).val() === true) || (auth != null && root.child('counters').child(auth.uid).val() === true)"
+    },
+    "meta": {
+      "tally": {
+        ".read": true,
+        ".write": "(auth != null && root.child('admins').child(auth.uid).val() === true) || (auth != null && root.child('counters').child(auth.uid).val() === true)"
+      },
+      "goal": {
+        ".read": true,
+        ".write": "auth != null && root.child('admins').child(auth.uid).val() === true"
+      },
+      "style": {
+        ".read": true,
+        ".write": "auth != null && root.child('admins').child(auth.uid).val() === true"
+      },
+      "fx": {
+        ".read": true,
+        ".write": "(auth != null && root.child('admins').child(auth.uid).val() === true) || (auth != null && root.child('counters').child(auth.uid).val() === true)"
+      },
+      "history": {
+        ".read": "(auth != null && root.child('admins').child(auth.uid).val() === true) || (auth != null && root.child('counters').child(auth.uid).val() === true)",
+        ".write": "(auth != null && root.child('admins').child(auth.uid).val() === true) || (auth != null && root.child('counters').child(auth.uid).val() === true)"
+      },
+      "presence": {
+        ".read": "(auth != null && root.child('admins').child(auth.uid).val() === true) || (auth != null && root.child('counters').child(auth.uid).val() === true)",
+        ".write": "(auth != null && root.child('admins').child(auth.uid).val() === true) || (auth != null && root.child('counters').child(auth.uid).val() === true)"
+      },
+      "stages": {
+        ".read": true,
+        ".write": "auth != null && root.child('admins').child(auth.uid).val() === true"
+      },
+      "visible": {
+        ".read": true,
+        ".write": "auth != null && root.child('admins').child(auth.uid).val() === true"
+      }
+    },
+    "bits": {
+      ".read": true,
+      ".write": "(auth != null && root.child('admins').child(auth.uid).val() === true) || (auth != null && root.child('counters').child(auth.uid).val() === true)"
+    }
+  }
+}

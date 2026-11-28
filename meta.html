@@ -3,343 +3,19 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Meta de subs BLOODSITAX</title>
+<title>Meta de subs BLOODSITAX · overlay</title>
 <style>
   /* ============ BASE (overlay y panel) ============ */
   html, body { margin: 0; padding: 0; }
   #widget { position: absolute; left: 0; top: 0; width: 100%; height: 100%; }
   html.display, body.display { background: transparent !important; overflow: hidden; width: 100vw; height: 100vh; }
 
-  /*PANEL-CSS-BEGIN*/
-  :root {
-    --pink: #FF4FB8;       /* rosa neón */
-    --pink-2: #FF6FC6;
-    --pastel: #FF9AD5;     /* rosa pastel */
-    --lila: #C77DFF;       /* lila neón */
-    --bg: #0C0510;
-    --panel: #170A1D;
-    --panel-2: #211029;
-    --border: #3D1E48;
-    --text: #FFEAF6;
-    --muted: #A57D9E;
-    --ok: #5CF2B8;
-    --manual: #FF5C7A;
-    --warn: #FFB36B;
-    --anon: #FFB3E0;
-    --info: #C77DFF;
-    --mono: "Consolas", "SFMono-Regular", "DejaVu Sans Mono", monospace;
-  }
-  body:not(.display) { background: var(--bg); color: var(--text); font-family: var(--mono); font-size: 14px; -webkit-font-smoothing: antialiased; }
-  body:not(.display) * { box-sizing: border-box; }
-  #panel { max-width: 1260px; margin: 0 auto; padding: 26px 22px 60px; }
-  .layout { display: grid; grid-template-columns: minmax(0, 1fr) 410px; gap: 22px; align-items: start; }
-  .col-main { min-width: 0; }
-  .col-side { position: sticky; top: 18px; }
-  @media (max-width: 1020px) { .layout { grid-template-columns: 1fr; } .col-side { position: static; } }
 
-  .brand { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin-bottom: 16px; }
-  .brand h1 { margin: 0; font-size: 19px; letter-spacing: .3em; color: var(--pink); text-shadow: 0 0 14px rgba(255,79,184,.55); }
-  .brand span { font-size: 12px; letter-spacing: .16em; color: var(--muted); }
-
-  .banner { border: 1px solid var(--warn); background: rgba(255,160,46,.08); color: #FFD6A3; border-radius: 12px; padding: 14px 16px; margin-bottom: 16px; line-height: 1.6; font-size: 13px; }
-  .banner code { color: #fff; }
-
-  .preview { position: relative; border: 1px solid var(--border); border-radius: 14px; overflow: hidden;
-    background: repeating-conic-gradient(#1a0c20 0% 25%, #12071a 0% 50%) 50% / 20px 20px; }
-  .pv-wrap { position: relative; width: 100%; }
-  #pvStage { position: absolute; left: 0; top: 0; width: 700px; height: 560px; transform-origin: top left; overflow: hidden; }
-
-  .block { background: var(--panel); border: 1px solid var(--border); border-radius: 14px; padding: 18px; margin-bottom: 14px; }
-  .title { display: flex; align-items: center; gap: 10px; font-size: 13px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--text); }
-  .title::before { content: ""; width: 4px; height: 15px; border-radius: 2px; background: var(--pink); flex: none; }
-  .title small { font-size: 11px; font-weight: 400; letter-spacing: .05em; text-transform: none; color: var(--muted); }
-  .block > .title { margin-bottom: 14px; }
-  .block-head { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 12px; flex-wrap: wrap; }
-  details.block summary { cursor: pointer; list-style: none; }
-  details.block summary::-webkit-details-marker { display: none; }
-  details.block summary .chev { margin-left: auto; color: var(--muted); font-size: 18px; transition: transform .15s; }
-  details.block[open] summary .chev { transform: rotate(90deg); }
-  details.block[open] > summary { margin-bottom: 16px; }
-
-  button { font-family: var(--mono); cursor: pointer; border: 1px solid var(--border); background: var(--panel-2); color: var(--text);
-    border-radius: 9px; padding: 11px 15px; font-size: 13px; letter-spacing: .05em; font-weight: 700; }
-  button:hover { border-color: var(--pink); }
-  button:disabled { opacity: .45; cursor: default; }
-  button.primary { background: var(--pink); border-color: var(--pink); color: #fff; }
-  button.primary:hover { background: var(--pink-2); }
-  button.ghost { background: transparent; }
-  button.danger { color: var(--manual); }
-  button.danger:hover { border-color: var(--manual); background: rgba(255,77,77,.08); }
-  button.small { padding: 7px 11px; font-size: 11px; }
-
-  input[type="text"], input[type="number"], select {
-    font-family: var(--mono); background: var(--bg); border: 1px solid var(--border); color: var(--text);
-    border-radius: 9px; padding: 10px 12px; font-size: 14px; width: 100%; min-width: 0; }
-  input:focus, select:focus { outline: none; border-color: var(--pink); }
-  input[type="color"] { width: 100%; height: 40px; border: 1px solid var(--border); border-radius: 9px; background: var(--bg); padding: 3px; cursor: pointer; }
-  input[type="range"] { width: 100%; accent-color: var(--pink); }
-  input.nospin::-webkit-outer-spin-button, input.nospin::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
-  input.nospin { -moz-appearance: textfield; }
-  .row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
-  .row > * { flex: 1; }
-  .row > .fit { flex: 0 0 auto; }
-  .hint { font-size: 12px; color: var(--muted); line-height: 1.65; margin: 10px 0 0; }
-  .hint code { color: var(--pastel); }
-  .flash { font-size: 12px; color: var(--pastel); min-height: 16px; margin-top: 8px; }
-  .sublabel { font-size: 11px; letter-spacing: .14em; color: var(--muted); text-transform: uppercase; margin-bottom: 8px; }
-  hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
-
-  /* conteo grande */
-  .big { display: flex; align-items: center; gap: 22px; flex-wrap: wrap; }
-  .big-num { font-size: 56px; font-weight: 700; font-variant-numeric: tabular-nums; letter-spacing: .02em; line-height: 1; }
-  .big-num small { font-size: 26px; color: var(--muted); }
-  .big-side { flex: 1; min-width: 220px; display: flex; flex-direction: column; gap: 10px; }
-  .bar { height: 10px; border-radius: 6px; background: var(--bg); border: 1px solid var(--border); overflow: hidden; }
-  .bar i { display: block; height: 100%; width: 0; background: linear-gradient(90deg, var(--pink), var(--pastel)); transition: width .4s; }
-  .pct { font-size: 12px; color: var(--muted); letter-spacing: .08em; }
-  .quick { display: flex; gap: 8px; }
-  .quick button { flex: 1; font-size: 17px; padding: 12px 0; }
-  .quick button.minus { color: var(--manual); background: transparent; }
-
-  .status { font-size: 12px; letter-spacing: .12em; color: var(--muted); text-transform: uppercase; display: inline-flex; align-items: center; gap: 9px; }
-  .status .dot { width: 9px; height: 9px; border-radius: 50%; background: var(--muted); flex: none; }
-  .status.live { color: var(--text); }
-  .status.live .dot { background: var(--ok); box-shadow: 0 0 8px var(--ok); }
-  .status.err .dot { background: var(--manual); }
-
-  .ops { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-  @media (max-width: 720px) { .ops { grid-template-columns: 1fr; } }
-  .op { background: var(--bg); border: 1px solid var(--border); border-radius: 11px; padding: 14px; display: flex; flex-direction: column; gap: 10px; }
-  .op .ol { font-size: 12px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }
-  .op .ol small { display: block; font-weight: 400; letter-spacing: .02em; text-transform: none; color: var(--muted); margin-top: 4px; }
-  .op input { text-align: center; font-size: 20px; font-weight: 700; }
-  .op .row button { padding: 11px 8px; }
-  .op.reset { border-color: rgba(255,77,77,.4); }
-
-  /* estilo */
-  .sgroup { margin-bottom: 18px; }
-  .sgrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
-  @media (max-width: 620px) { .sgrid { grid-template-columns: 1fr 1fr; } }
-  .field { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
-  .field.wide { grid-column: 1 / -1; }
-  .field label { font-size: 11px; letter-spacing: .08em; color: var(--muted); text-transform: uppercase; }
-  .field label b { color: var(--text); font-weight: 400; }
-  .check { display: inline-flex; align-items: center; gap: 8px; font-size: 12px; color: var(--text); cursor: pointer; padding: 10px 0; }
-  .check input { accent-color: var(--pink); width: 16px; height: 16px; }
-
-  /* conexiones */
-  .conn-list { display: flex; flex-direction: column; gap: 8px; }
-  .keybox { display: flex; gap: 8px; align-items: center; }
-  .keybox code { flex: 1; background: var(--bg); border: 1px solid var(--border); border-radius: 9px; padding: 10px 12px; color: var(--pastel); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-
-  /* historial */
-  .hist-card { display: flex; flex-direction: column; max-height: calc(100vh - 36px); margin-bottom: 0; }
-  @media (max-width: 1020px) { .hist-card { max-height: none; } }
-  .legend { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 11px; color: var(--muted); letter-spacing: .06em; }
-  .legend i { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 6px; vertical-align: -1px; }
-  .hist { flex: 1; min-height: 220px; overflow-y: auto; display: flex; flex-direction: column; gap: 6px; padding-right: 4px; }
-  @media (max-width: 1020px) { .hist { max-height: 460px; } }
-  .hist:empty::before { content: "Todavía no hay movimientos."; font-size: 13px; color: var(--muted); padding: 8px 2px; }
-  .hrow { display: grid; grid-template-columns: 1fr auto; gap: 4px 12px; padding: 10px 12px; border-radius: 8px; background: var(--bg); border-left: 3px solid var(--muted); }
-  .hrow .hx { font-size: 13px; color: var(--text); min-width: 0; overflow-wrap: anywhere; line-height: 1.4; }
-  .hrow .hd { font-size: 14px; font-weight: 700; white-space: nowrap; text-align: right; font-variant-numeric: tabular-nums; }
-  .hrow .hn { grid-column: 1 / -1; font-size: 12px; line-height: 1.4; color: var(--warn); }
-  .hrow .ht { grid-column: 1 / -1; font-size: 11px; color: var(--muted); font-variant-numeric: tabular-nums; }
-  .hrow .ht em { font-style: normal; margin-left: 8px; }
-  .hrow.auto { border-left-color: var(--ok); } .hrow.auto .hd { color: var(--ok); }
-  .hrow.anon { border-left-color: var(--anon); background: rgba(255,179,209,.06); } .hrow.anon .hd { color: var(--anon); }
-  .hrow.manual { border-left-color: var(--manual); } .hrow.manual .hd { color: var(--manual); }
-  .hrow.warn { border-left-color: var(--warn); background: rgba(255,160,46,.07); } .hrow.warn .hd { color: var(--warn); } .hrow.warn .hx { color: #FFD6A3; }
-  .hrow.info { border-left-color: var(--info); } .hrow.info .hd { color: var(--info); }
-  .hist-foot { display: flex; gap: 8px; margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border); flex-wrap: wrap; }
-  .hist-foot input { flex: 1; min-width: 140px; }
-
-  /* pestañas entre paneles */
-  .tabs { display: flex; gap: 6px; flex-wrap: wrap; }
-  .tabs a { font-size: 12px; font-weight: 700; letter-spacing: .14em; text-decoration: none; color: var(--muted);
-    border: 1px solid var(--border); border-radius: 9px; padding: 8px 14px; background: var(--panel); }
-  .tabs a:hover { color: var(--text); border-color: var(--pink); }
-  .tabs a.on { color: #fff; background: var(--pink); border-color: var(--pink); box-shadow: 0 0 14px rgba(255,79,184,.45); }
-  .brand .who { margin-left: auto; font-size: 11px; letter-spacing: .04em; display: inline-flex; gap: 8px; align-items: center; color: var(--muted); }
-
-  /* luces: ¿está contando cada overlay de OBS? */
-  .ovlights { display: flex; gap: 10px; flex-wrap: wrap; margin: 0 0 14px; }
-  .light { display: inline-flex; align-items: center; gap: 10px; padding: 9px 14px; border-radius: 10px; font-size: 12px;
-    font-weight: 700; letter-spacing: .12em; text-transform: uppercase; background: rgba(255,92,122,.08); border: 1px solid rgba(255,92,122,.5); color: #FFC2CE; }
-  .light .ld { width: 12px; height: 12px; border-radius: 50%; background: #FF3B5C; box-shadow: 0 0 10px #FF3B5C; flex: none; animation: ldblink 1s steps(2, start) infinite; }
-  .light small { font-weight: 400; letter-spacing: .04em; text-transform: none; opacity: .85; }
-  .light.on { background: rgba(92,242,184,.07); border-color: rgba(92,242,184,.45); color: #C8FFE9; }
-  .light.on .ld { background: #5CF2B8; box-shadow: 0 0 10px #5CF2B8; animation: none; }
-  @keyframes ldblink { to { visibility: hidden; } }
-  /* paginación del historial */
-  .pager { display: flex; align-items: center; gap: 8px; margin-top: 10px; }
-  .pager span { flex: 1; text-align: center; font-size: 11px; color: var(--muted); letter-spacing: .04em; line-height: 1.4; }
-  .pager button { padding: 7px 10px; font-size: 11px; }
-  /* acceso */
-  #gate { display: none; position: fixed; inset: 0; z-index: 50; background: radial-gradient(circle at 50% 30%, #2A0E2C 0%, var(--bg) 70%);
-    align-items: center; justify-content: center; padding: 20px; }
-  #gate.show { display: flex; }
-  .gate-card { width: 100%; max-width: 380px; text-align: center; background: var(--panel); border: 1px solid var(--border);
-    border-radius: 16px; padding: 32px 24px; display: flex; flex-direction: column; gap: 14px; box-shadow: 0 0 40px rgba(255,79,184,.18); }
-  .gate-card h1 { margin: 0; font-size: 22px; letter-spacing: .3em; color: var(--pink); text-shadow: 0 0 14px rgba(255,79,184,.6); }
-  .gate-card p { margin: 0; font-size: 12px; color: var(--muted); letter-spacing: .08em; }
-  .gate-msg { font-size: 12px; color: var(--pastel); line-height: 1.7; min-height: 16px; overflow-wrap: anywhere; }
-  .gate-msg code { color: var(--text); background: var(--bg); padding: 2px 6px; border-radius: 5px; }
-  input[type="password"] { font-family: var(--mono); background: var(--bg); border: 1px solid var(--border); color: var(--text);
-    border-radius: 9px; padding: 10px 12px; font-size: 14px; width: 100%; min-width: 0; }
-  .chips { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; margin-top: 18px; font-size: 12px; color: var(--muted); align-items: center; }
-  .chips a { display: inline-block; padding: 4px 12px; border: 1px solid var(--pastel); border-radius: 6px; color: var(--pastel);
-    text-decoration: none; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; background: rgba(255,154,213,.08); }
-  .chips a:hover { background: rgba(255,154,213,.18); }
-  /*PANEL-CSS-END*/
 </style>
 </head>
 <body>
 
-<!--PANEL-HTML-BEGIN-->
-<div id="gate">
-  <div class="gate-card">
-    <h1>BLOODSITAX</h1>
-    <p>Panel de la meta de subs · solo para el equipo</p>
-    <button class="primary" id="btnLogin">ENTRAR CON GOOGLE</button>
-    <div class="gate-msg" id="gateMsg"></div>
-    <button class="ghost small" id="btnLogout2" hidden>Usar otra cuenta</button>
-  </div>
-</div>
 
-<div id="panel">
-
-  <div id="mainView" hidden>
-  <div class="layout">
-  <div class="col-main">
-
-    <div class="brand">
-      <div class="tabs"><a href="./">TIMER</a><a href="meta.html" class="on">META DE SUBS</a></div>
-      <span class="who"><span id="whoami"></span> <button class="ghost small" id="btnLogout">Salir</button></span>
-    </div>
-    <div class="ovlights">
-    <div class="light" id="lightTimer" title="Overlay del timer en OBS con clave y chat conectado"><span class="ld"></span>Overlay timer <small id="lightTimerTx">sin contar</small></div>
-    <div class="light" id="lightMeta" title="Overlay de la meta en OBS con clave (solo muestra; las subs las cuenta el timer)"><span class="ld"></span>Overlay meta <small id="lightMetaTx">sin contar</small></div>
-  </div>
-    <div class="banner" id="cfgBanner" hidden>Falta pegar la configuración de tu proyecto de Firebase en el archivo (busca <code>FIREBASE_CONFIG</code>). Mientras tanto, el panel solo muestra la vista previa.</div>
-
-    <div class="preview"><div class="pv-wrap" id="pvWrap"><div id="pvStage"></div></div></div>
-
-    <div class="block" style="margin-top:14px;">
-      <div class="big">
-        <div class="big-num" id="bigNum">0 <small>/ 100</small></div>
-        <div class="big-side">
-          <div class="bar"><i id="bigBar"></i></div>
-          <div class="pct" id="bigPct">0 %</div>
-          <div class="quick">
-            <button class="minus" data-q="-1" title="Restar 1">- 1</button>
-            <button class="primary" data-q="1" title="Sumar 1">+ 1</button>
-            <button data-q="5" title="Sumar 5">+ 5</button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="block">
-      <div class="title">Controles manuales <small>por si algo no se contó o se contó de más</small></div>
-      <div class="ops">
-        <div class="op">
-          <div class="ol">Sumar o restar<small>se suma o resta al conteo actual</small></div>
-          <input type="number" class="nospin" id="opAmount" min="1" step="1" value="1">
-          <div class="row"><button class="danger" id="btnSub">- RESTAR</button><button class="primary" id="btnAdd">+ SUMAR</button></div>
-        </div>
-        <div class="op">
-          <div class="ol">Número fijo<small>pone el conteo exacto, por ejemplo tu total de antes</small></div>
-          <input type="number" class="nospin" id="opSet" min="0" step="1" placeholder="0">
-          <div class="row"><button class="primary" id="btnSet">PONER NÚMERO</button></div>
-        </div>
-        <div class="op">
-          <div class="ol">Meta total<small>la calabaza se vuelve a llenar según la meta nueva</small></div>
-          <input type="number" class="nospin" id="opGoal" min="1" step="1" placeholder="100">
-          <div class="row"><button class="primary" id="btnGoal">CAMBIAR META</button></div>
-        </div>
-        <div class="op reset">
-          <div class="ol">Reiniciar<small>deja el conteo en 0; la meta no cambia</small></div>
-          <div class="row" style="flex:1; align-items:flex-end;"><button class="danger" id="btnReset">REINICIAR A 0</button></div>
-        </div>
-      </div>
-      <div class="flash" id="opFlash"></div>
-    </div>
-
-    <div class="block">
-      <div class="title">Probar en OBS <small>solo animación, no cambia el conteo</small></div>
-      <div class="row"><button id="btnTestBounce">PROBAR REBOTE</button><button id="btnTestComplete">PROBAR META COMPLETA</button></div>
-    </div>
-
-    <details class="block" id="connBlock">
-      <summary class="title">Conexión <small id="connSummary"></small><span class="chev">&rsaquo;</span></summary>
-      <div class="sublabel">Quién está contando ahora</div>
-      <div class="conn-list" id="connList"></div>
-      <p class="hint">La meta ya no escucha el chat: las subs las cuenta el <b>timer</b> (su overlay en OBS y sus paneles) y las suma aquí, 1 por sub, sin multiplicador. Esta lista muestra quién tiene abierta la meta.</p>
-    </details>
-
-    <details class="block" id="obsBlock" open>
-      <summary class="title">Link para OBS <small>overlay de la meta, fondo transparente</small><span class="chev">&rsaquo;</span></summary>
-      <div class="sublabel">Clave del overlay (la misma que usa el timer)</div>
-      <div class="row">
-        <input type="password" id="ovKey" placeholder="Clave del overlay" autocomplete="off">
-        <button class="fit primary" id="btnCopyObs">COPIAR LINK META CON CLAVE</button>
-        <button class="fit ghost" id="btnCopyView">Sin clave</button>
-      </div>
-      <div class="flash" id="connFlash"></div>
-      <p class="hint">Este link es <b>solo de la meta de subs</b>. El del timer se copia desde la pestaña TIMER.
-        Con clave: la calabaza muestra el conteo <b>y cuenta</b> las subs aunque no haya ningún panel abierto. Sin clave: solo muestra.
-        No muestres el link con clave en pantalla.</p>
-    </details>
-
-    <details class="block" id="styleBlock">
-      <summary class="title">Estilo de la calabaza <small>colores, texto, posición y efectos</small><span class="chev">&rsaquo;</span></summary>
-      <div id="styleForm"></div>
-      <div class="row" style="margin-top:6px;">
-        <button class="fit ghost" id="btnStyleReset">Restablecer estilo</button>
-        <button class="fit" id="btnDownload">DESCARGAR OVERLAY</button>
-      </div>
-      <p class="hint">Los cambios se ven en vivo en OBS. "Descargar overlay" genera un HTML solo con la calabaza y el estilo actual fijo, sin el panel. El conteo sigue saliendo de Firebase; para que también cuente, ábrelo con #k=clave al final.</p>
-      <div class="flash" id="styleFlash"></div>
-    </details>
-
-    <div class="block">
-      <div class="title">Respaldo</div>
-      <div class="row"><button class="fit" id="btnExport">EXPORTAR RESPALDO (JSON)</button></div>
-      <p class="hint">Descarga el conteo, la meta, el estilo y el historial completo. Útil antes de un evento grande.</p>
-    </div>
-
-  </div>
-
-  <aside class="col-side">
-    <div class="block hist-card">
-      <div class="block-head">
-        <div class="title">Historial</div>
-      </div>
-      <div class="legend" style="margin-bottom:12px;">
-        <span><i style="background:var(--ok)"></i>Automático</span>
-        <span><i style="background:var(--anon)"></i>Anónimo</span>
-        <span><i style="background:var(--manual)"></i>Manual</span>
-        <span><i style="background:var(--warn)"></i>Revisar</span>
-        <span><i style="background:var(--info)"></i>Aviso</span>
-      </div>
-      <div class="hist" id="hist"></div>
-      <div class="pager"><button class="ghost" id="histNewer">&lsaquo; Más recientes</button><span id="histInfo"></span><button class="ghost" id="histOlder">Más antiguos &rsaquo;</button></div>
-      <div class="hist-foot">
-        <input type="text" id="myName" placeholder="Tu nombre (sale en lo manual)">
-        <button class="ghost small danger" id="btnClearHist">Borrar</button>
-      </div>
-    </div>
-  </aside>
-  </div>
-  <div class="chips">Overlays para OBS:
-    <a href="./?display" target="_blank" id="chipTimer">timer</a>
-    <a href="meta.html?display" target="_blank" id="chipMeta">meta de subs</a>
-    · fondo transparente
-  </div>
-  </div>
-</div>
-<!--PANEL-HTML-END-->
 
 <div id="widget"></div>
 
@@ -375,7 +51,9 @@
   const BAKED = window.__OVERLAY || null;     // overlay descargado: estilo fijo
   const TEST = window.__TEST || null;         // solo para pruebas automáticas
   const params = new URLSearchParams(location.search);
-  const DISPLAY = !!BAKED || !!window.__OVERLAY_ONLY || params.has("display");
+  // Este archivo es solo el overlay. El panel de la meta está dentro del panel del timer (index.html).
+  if (!BAKED && !window.__OVERLAY_ONLY && !params.has("display")) location.replace("./");
+  const DISPLAY = true;
   const CFG = (TEST && TEST.config) || FIREBASE_CONFIG;
   const CONFIGURED = /^https:\/\//.test(CFG.databaseURL || "") && !/PEGA_AQUI/.test(CFG.apiKey || "");
   const BULK_WAIT = (TEST && TEST.bulkWait) || 60000;   // espera antes de revisar un regalo masivo
@@ -468,6 +146,18 @@
   // Lo que en StreamElements hacía jQuery.animate (0.5 s, curva "swing"), aquí con CSS
   const EXTRA_CSS = `
 .water-fill, .water-fill-2, .stroke-1, .stroke-2, .water-effect-video { height: 0; transition: height .5s cubic-bezier(.37,0,.63,1); }
+.goal-widget.stage-glow .pumpkin-body { animation: stage-glow 4s ease-in-out; }
+@keyframes stage-glow {
+  0%   { filter: brightness(1); transform: scale(1); }
+  15%  { filter: brightness(1.6) drop-shadow(0 0 18px #fff); transform: scale(1.06); }
+  50%  { filter: brightness(1.35) drop-shadow(0 0 26px #fff); transform: scale(1.03); }
+  85%  { filter: brightness(1.7) drop-shadow(0 0 30px #fff); transform: scale(1.08); }
+  100% { filter: brightness(1); transform: scale(1); }
+}
+.goal-widget.stage-in .pumpkin-body { animation: stage-in .6s cubic-bezier(.3,1.6,.5,1); }
+@keyframes stage-in { 0% { transform: scale(.6); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+#widget { transition: opacity .6s ease; }
+#widget.hidden-meta { opacity: 0; }
 `;
 
   const PREVIEW = !DISPLAY;
@@ -541,6 +231,43 @@
     q1(".goal-widget").classList.toggle("candle-on", v.candle);
   }
 
+  /* ================================================================
+     CONTENEDORES Y ETAPAS
+     Cada contenedor es un estilo encima de la calabaza (por ahora solo cambian los colores).
+     Las etapas salen del conteo: con "per" = 10, la 1.ª va de 0 a 10, la 2.ª de 10 a 20, etc.
+     Al llegar al final de una etapa: brilla y salen murciélagos 4 s, y pasa al siguiente.
+     Después del último se queda lleno y el número sigue subiendo.
+  ================================================================ */
+  const CONTAINERS = {
+    calabaza: { name: "Calabaza", s: {} },
+    verde:    { name: "Calabaza verde", s: { bordeColor: "#22c55e", bordeGlow: "#4ade80", fillcolor1: "#4ade80", fillcolor2: "#a7f3c0", glowcolb: "#22c55e", glowcolor: "#22c55e", faceLiquidColor: "#d9f99d", candleColor: "#86efac" } },
+    amarilla: { name: "Calabaza amarilla", s: { bordeColor: "#facc15", bordeGlow: "#fde047", fillcolor1: "#fde047", fillcolor2: "#fef3a0", glowcolb: "#eab308", glowcolor: "#eab308", faceLiquidColor: "#fff7c2", candleColor: "#fde68a" } },
+    morada:   { name: "Calabaza morada", s: { bordeColor: "#a855f7", bordeGlow: "#c084fc", fillcolor1: "#c084fc", fillcolor2: "#e9d5ff", glowcolb: "#9333ea", glowcolor: "#9333ea", faceLiquidColor: "#f0abfc", candleColor: "#d8b4fe" } },
+    roja:     { name: "Calabaza roja", s: { bordeColor: "#ef4444", bordeGlow: "#f87171", fillcolor1: "#f87171", fillcolor2: "#fecaca", glowcolb: "#dc2626", glowcolor: "#dc2626", faceLiquidColor: "#fca5a5", candleColor: "#fca5a5" } }
+  };
+  const DEFAULT_ORDER = ["calabaza", "verde", "amarilla", "morada", "roja"];
+  const TRANSITION_MS = 4000;
+  let stages = { per: 15, order: DEFAULT_ORDER.slice() };
+  let baseStyle = { ...DEFAULT_STYLE };      // estilo general (de Firebase o del archivo descargado)
+  let shown = 0;                             // etapa que se está mostrando
+  let busy = false;                          // hay una transición en curso
+  function cleanStages(v) {
+    const per = Math.max(1, Math.min(10000, Math.floor(num(v && v.per, 15))));
+    let order = Array.isArray(v && v.order) ? v.order.filter((k) => CONTAINERS[k]).slice(0, 20) : [];
+    if (!order.length) order = DEFAULT_ORDER.slice();
+    return { per, order };
+  }
+  const stageFor = (c) => Math.min(stages.order.length - 1, Math.max(0, Math.floor(c / stages.per)));
+  const goalFor = (i) => stages.per * (i + 1);
+  const isLast = (i) => i >= stages.order.length - 1;
+  function applyStage(i) {
+    shown = Math.max(0, Math.min(stages.order.length - 1, i));
+    const c = CONTAINERS[stages.order[shown]] || CONTAINERS.calabaza;
+    S = { ...baseStyle, ...c.s };
+    goal = goalFor(shown);
+    renderWidget();
+  }
+
   /* ---------------- estado del conteo ---------------- */
   let count = 0, goal = 100;
   let gotTally = false, gotGoal = false, loaded = false, wasComplete = false;
@@ -574,7 +301,7 @@
         done.style.display = "block";
         try { const pr = done.play(); if (pr && pr.catch) pr.catch(() => {}); } catch (e) {}
       } else done.style.display = "none";
-      if (!wasComplete && loaded) FX.celebrate();
+      if (!wasComplete && loaded && isLast(shown) && !busy) FX.celebrate(4);
       FX.setSparkles(st.completeFx !== false);
     } else {
       done.style.display = "none";
@@ -626,14 +353,23 @@
     ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
   }
 
-  function celebrate() {
+  // dur = segundos que dura el efecto (salen tandas de murciélagos hasta completar)
+  function celebrate(dur) {
     if (S.completeFx === false) return;
-    for (let i = 0; i < 9; i++) {
+    dur = dur || 3;
+    wave(dur <= 2 ? 6 : 9, dur <= 2 ? 0.75 : 1);
+    if (dur > 2.5) {
+      setTimeout(() => wave(7, 1), 1200);
+      if (dur > 3.5) setTimeout(() => wave(7, 0.85), 2300);
+    }
+  }
+  function wave(nBats, lifeK) {
+    for (let i = 0; i < nBats; i++) {
       const a = -Math.PI / 2 + (i - 4) * 0.32 + (Math.random() - 0.5) * 0.2;
       const sp = 140 + Math.random() * 90;
       bats.push({
         x: 100, y: 70, vx: Math.cos(a) * sp, vy: Math.sin(a) * sp,
-        t: 0, life: 2.6 + Math.random() * 0.6, size: 0.8 + Math.random() * 0.5,
+        t: 0, life: (1.6 + Math.random() * 0.5) * lifeK, size: 0.8 + Math.random() * 0.5,
         flap: Math.random() * 6
       });
     }
@@ -753,7 +489,7 @@
 })();
 
   // primer dibujo (con valores por defecto) antes de que llegue Firebase
-  if (BAKED && BAKED.style) S = { ...DEFAULT_STYLE, ...BAKED.style };
+  if (BAKED && BAKED.style) { baseStyle = { ...DEFAULT_STYLE, ...BAKED.style }; S = { ...baseStyle }; }
   if (PREVIEW) { const st = $("pvStage"); if (st) st.appendChild(widgetEl); }
   renderWidget();
 
@@ -776,24 +512,25 @@
       const c = Math.max(0, Math.floor(num(tally.count)));
       const prev = count;
       count = c;
-      if (!gotTally) { gotTally = true; maybeLoaded(); }
-      else if (loaded && c > prev) bounce();
-      updateProgress();
-      hooks.count();
+      if (!gotTally) { gotTally = true; maybeLoaded(); return; }
+      if (!loaded) return;
+      if (c > prev && !busy) bounce();
+      onCount();
     });
-    onValue(rf("goal"), (snap) => {
-      const v = snap.val();
-      goal = v == null ? 100 : Math.max(1, Math.floor(num(v, 100)));
-      if (!gotGoal) { gotGoal = true; maybeLoaded(); }
-      updateProgress();
-      hooks.count();
+    // etapas: cada cuántas subs cambia y en qué orden van los contenedores
+    if (BAKED && BAKED.stages) { stages = cleanStages(BAKED.stages); if (!gotGoal) { gotGoal = true; maybeLoaded(); } }
+    else onValue(rf("stages"), (snap) => {
+      stages = cleanStages(snap.val() || {});
+      if (!gotGoal) { gotGoal = true; maybeLoaded(); return; }
+      // cambio de configuración: se acomoda directo, sin festejo
+      if (!busy) { applyStage(stageFor(count)); wasComplete = count >= goal; }
     });
+    onValue(rf("visible"), (snap) => { widgetEl.classList.toggle("hidden-meta", snap.val() === false); });
     if (!BAKED) {
       onValue(rf("style"), (snap) => {
         const v = snap.val();
-        S = { ...DEFAULT_STYLE, ...(v || {}) };
-        renderWidget();
-        hooks.style();
+        baseStyle = { ...DEFAULT_STYLE, ...(v || {}) };
+        if (!busy) applyStage(shown);
       });
     }
     // pruebas de animación desde el panel (no tocan el conteo)
@@ -806,7 +543,10 @@
       if (!id || id === fxSeen) return;
       fxSeen = v.id;
       if (v.type === "bounce") bounce();
-      else if (v.type === "complete") FX.celebrate();
+      else if (v.type === "complete") FX.celebrate(4);
+      else if (v.type === "mini") FX.celebrate(2);                 // botón chico del panel
+      else if (v.type === "transition") testTransition();          // probar cambio de contenedor
+      else if (v.type === "premium") premium(v);                   // regalo de 5 o más de golpe
     });
 
     // La meta ya no lee el chat: la alimenta el timer (index.html).
@@ -818,8 +558,67 @@
   }
   function maybeLoaded() {
     if (loaded || !gotTally || !gotGoal) return;
-    wasComplete = goal > 0 && count >= goal;   // al abrir no se festeja otra vez
+    applyStage(stageFor(count));               // al abrir va directo a su contenedor, sin animación
+    wasComplete = goal > 0 && count >= goal;   // y no festeja otra vez
     loaded = true;
+    updateProgress();
+  }
+
+  /* ---------------- cambios de contenedor ----------------
+     Si el conteo pasa el final de la etapa: se queda lleno con "22 · 15", brilla 4 s,
+     y pasa al siguiente ("22 · 30"). Si salta varias etapas, las hace una por una. */
+  function onCount() {
+    if (busy) return;                          // al terminar la transición se revisa otra vez
+    const target = stageFor(count);
+    if (target > shown) { runTransition(); return; }
+    if (target < shown) { applyStage(target); wasComplete = count >= goal; return; }   // bajó: directo
+    updateProgress();
+  }
+  async function runTransition() {
+    busy = true;
+    while (stageFor(count) > shown) {
+      updateProgress();                        // muestra el número nuevo con el contenedor lleno
+      await glowAndBats();
+      const gw = q1(".goal-widget");
+      applyStage(shown + 1);
+      wasComplete = count >= goal;
+      const g2 = q1(".goal-widget");
+      g2.classList.remove("stage-in"); void g2.offsetWidth; g2.classList.add("stage-in");
+      await sleep(700);
+    }
+    busy = false;
+    // si en el último contenedor ya está lleno, festeja al llegar
+    if (isLast(shown) && count >= goal) FX.celebrate(4);
+    onCount();
+  }
+  function glowAndBats() {
+    const gw = q1(".goal-widget");
+    gw.classList.remove("stage-glow"); void gw.offsetWidth; gw.classList.add("stage-glow");
+    FX.celebrate(4);
+    return sleep(TRANSITION_MS).then(() => { const g = q1(".goal-widget"); if (g) g.classList.remove("stage-glow"); });
+  }
+  // prueba desde el panel: anima el cambio al siguiente contenedor y luego regresa (no toca el conteo)
+  async function testTransition() {
+    if (busy) return;
+    busy = true;
+    const back = shown;
+    await glowAndBats();
+    if (!isLast(back)) {
+      applyStage(back + 1);
+      const g = q1(".goal-widget"); g.classList.add("stage-in");
+      await sleep(2500);
+      applyStage(back);
+    }
+    busy = false;
+    onCount();
+  }
+  // efecto premium (regalo de 5 o más de golpe). Por ahora: brillo + murciélagos; luego va el efecto definitivo.
+  function premium(v) {
+    if (busy) { FX.celebrate(4); return; }
+    const gw = q1(".goal-widget");
+    gw.classList.remove("stage-glow"); void gw.offsetWidth; gw.classList.add("stage-glow");
+    FX.celebrate(4);
+    setTimeout(() => { const g = q1(".goal-widget"); if (g) g.classList.remove("stage-glow"); }, TRANSITION_MS);
   }
 
   /* ================================================================
@@ -1183,318 +982,7 @@
     });
   }
 
-  /*PANEL-JS-BEGIN*/
-  function initPanel() {
-    const flash = (id, msg) => { const el = $(id); if (!el) return; el.textContent = msg; clearTimeout(el._t); el._t = setTimeout(() => { el.textContent = ""; }, 3500); };
 
-    $("mainView").hidden = false;
-    $("cfgBanner").hidden = CONFIGURED;
-
-    /* ---------------- link para OBS (solo meta) ---------------- */
-    const KEY_LS = "bs_overlay_key";              // la misma clave que guarda el panel del timer
-    $("ovKey").value = lsGet(KEY_LS) || "";
-    $("ovKey").addEventListener("change", () => lsSet(KEY_LS, $("ovKey").value.trim()));
-    const dir = location.origin + location.pathname.replace(/[^/]*$/, "");
-    const metaDisplay = dir + "meta.html?display";
-    const copy = async (txt, msg) => { try { await navigator.clipboard.writeText(txt); flash("connFlash", msg); } catch (e) { prompt("Copia el link:", txt); } };
-    $("btnCopyObs").addEventListener("click", () => {
-      const k = $("ovKey").value.trim();
-      if (!k) { flash("connFlash", "Escribe la clave del overlay primero."); $("ovKey").focus(); return; }
-      lsSet(KEY_LS, k);
-      copy(metaDisplay + "#k=" + encodeURIComponent(k), "Link de la META copiado. Pégalo en una fuente de navegador de OBS.");
-    });
-    $("btnCopyView").addEventListener("click", () => copy(metaDisplay, "Link de la meta sin clave copiado (solo muestra, no cuenta)."));
-
-    /* ---------------- vista previa ---------------- */
-    const pvWrap = $("pvWrap"), pvStage = $("pvStage");
-    function fitPreview() {
-      const w = pvWrap.clientWidth || 700;
-      const k = Math.min(1, w / 700);
-      pvStage.style.transform = `scale(${k})`;
-      pvWrap.style.height = (560 * k) + "px";
-    }
-    new ResizeObserver(fitPreview).observe(pvWrap);
-    fitPreview();
-
-    /* ---------------- nombre ---------------- */
-    $("myName").value = myName;
-    $("myName").addEventListener("change", () => {
-      myName = $("myName").value.trim().slice(0, 30);
-      lsSet("bs_subs_name", myName);
-      announce();
-    });
-
-    /* ---------------- conteo grande ---------------- */
-    hooks.count = () => {
-      $("bigNum").innerHTML = `${count} <small>/ ${goal}</small>`;
-      const pct = goal > 0 ? Math.min(100, (count / goal) * 100) : 0;
-      $("bigBar").style.width = pct + "%";
-      $("bigPct").textContent = (goal > 0 ? Math.round((count / goal) * 100) : 0) + " % de la meta" + (count >= goal ? " · META COMPLETA" : "");
-      if (document.activeElement !== $("opGoal")) $("opGoal").placeholder = goal;
-    };
-    hooks.count();
-
-    const needDb = () => { if (!db) { flash("opFlash", "Falta conectar Firebase."); return false; } return true; };
-    async function manualAdd(d) {
-      if (!needDb() || !d) return;
-      const r = await runOp({ t: "add", d });
-      if (!r) { flash("opFlash", "No se pudo guardar. Revisa la conexión."); return; }
-      if (r.delta === 0) { flash("opFlash", "El conteo ya está en 0."); return; }
-      addHistory("manual", r.delta > 0 ? `Sumado a mano: ${r.delta}` : `Restado a mano: ${-r.delta}`, r.delta);
-    }
-    document.querySelectorAll("[data-q]").forEach((b) => b.addEventListener("click", () => manualAdd(num(b.dataset.q))));
-    const amount = () => Math.floor(Math.abs(num($("opAmount").value)));
-    $("btnAdd").addEventListener("click", () => manualAdd(amount()));
-    $("btnSub").addEventListener("click", () => manualAdd(-amount()));
-
-    $("btnSet").addEventListener("click", async () => {
-      if (!needDb()) return;
-      if ($("opSet").value === "") { $("opSet").focus(); return; }
-      const v = Math.max(0, Math.floor(num($("opSet").value)));
-      const r = await runOp({ t: "set", v });
-      if (!r) { flash("opFlash", "No se pudo guardar. Revisa la conexión."); return; }
-      addHistory("manual", `Número fijo: de ${r.before} a ${r.after}`, r.delta);
-      $("opSet").value = "";
-      flash("opFlash", "Conteo puesto en " + v + ".");
-    });
-
-    $("btnGoal").addEventListener("click", async () => {
-      if (!needDb()) return;
-      const v = Math.floor(num($("opGoal").value));
-      if (v < 1) { $("opGoal").focus(); return; }
-      const before = goal;
-      await set(rf("goal"), v);
-      addHistory("info", `Meta cambiada de ${before} a ${v}`, null);
-      $("opGoal").value = "";
-      flash("opFlash", "Meta cambiada a " + v + ".");
-    });
-
-    $("btnReset").addEventListener("click", async () => {
-      if (!needDb()) return;
-      if (!confirm(`¿Reiniciar el conteo a 0? Ahora está en ${count}.`)) return;
-      const r = await runOp({ t: "set", v: 0 });
-      if (!r) { flash("opFlash", "No se pudo guardar. Revisa la conexión."); return; }
-      addHistory("manual", `Reiniciado a 0 (estaba en ${r.before})`, r.delta);
-      flash("opFlash", "Conteo en 0.");
-    });
-
-    /* ---------------- probar animaciones ---------------- */
-    const fxTest = (type) => { if (!needDb()) return; set(rf("fx"), { type, id: randId(8), ts: now() }); };
-    $("btnTestBounce").addEventListener("click", () => { bounce(); fxTest("bounce"); });
-    $("btnTestComplete").addEventListener("click", () => { FX.celebrate(); fxTest("complete"); });
-
-    /* ---------------- historial ---------------- */
-    const histEl = $("hist");
-    const fmtTime = (ts) => {
-      const d = new Date(ts);
-      const t = d.toLocaleTimeString("es-MX", { hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false });
-      return d.toDateString() === new Date().toDateString() ? t : d.toLocaleDateString("es-MX", { day: "2-digit", month: "2-digit" }) + " " + t;
-    };
-    const KINDS = { auto: "auto", anon: "anon", manual: "manual", warn: "warn", info: "info" };
-    // páginas de 300; para saber si hay más antiguos se pide uno extra
-    const PAGE = 300;
-    let histPage = 0, histAll = [], histOff = null;
-    function listenHist() {
-      if (!db) return;
-      if (histOff) histOff();
-      histOff = onValue(query(rf("history"), limitToLast(PAGE * (histPage + 1) + 1)), (snap) => {
-        const rows = [];
-        snap.forEach((c) => { const v = c.val(); if (v) rows.push(v); });
-        histAll = rows.reverse();
-        renderHist();
-      });
-    }
-    function renderHist() {
-      const from = histPage * PAGE, rows = histAll.slice(from, from + PAGE);
-      const more = histAll.length > from + PAGE;
-      $("histInfo").textContent = rows.length
-        ? `Página ${histPage + 1} · ${from + 1} a ${from + rows.length}${histPage === 0 ? " (lo más nuevo)" : ""}`
-        : (histPage ? "No hay más" : "");
-      $("histNewer").disabled = histPage === 0;
-      $("histOlder").disabled = !more;
-      histEl.innerHTML = rows.map((h) => {
-        const kind = KINDS[h.kind] || "info";
-        let d = "";
-        if (h.delta != null) d = (h.delta >= 0 ? "+" : "-") + Math.abs(h.delta);
-        else if (kind === "warn") d = "revisar";
-        const note = h.note ? `<span class="hn">${esc(h.note)}</span>` : "";
-        const by = h.by ? `<em>${esc(kind === "auto" || kind === "anon" ? "contó: " + h.by : h.by)}</em>` : "";
-        return `<div class="hrow ${kind}"><span class="hx">${esc(h.text)}</span><span class="hd">${d}</span>${note}<span class="ht">${fmtTime(h.ts)}${by}</span></div>`;
-      }).join("");
-    }
-    $("histOlder").addEventListener("click", () => { histPage++; listenHist(); histEl.scrollTop = 0; });
-    $("histNewer").addEventListener("click", () => { histPage = Math.max(0, histPage - 1); listenHist(); histEl.scrollTop = 0; });
-    listenHist();
-    $("btnClearHist").addEventListener("click", () => {
-      if (!needDb()) return;
-      if (confirm("¿Borrar todo el historial? El conteo no se toca.")) set(rf("history"), null);
-    });
-
-    /* ---------------- conexiones ---------------- */
-    /* ---------------- luces de los overlays ---------------- */
-    // verde = hay un overlay de OBS con clave y con el chat conectado; rojo = ese overlay no está contando
-    function setLight(id, list, okText) {
-      const obs = list.filter((p) => p && String(p.where || "").startsWith("Overlay"));
-      const live = obs.some((p) => p.irc);
-      $(id).classList.toggle("on", live);
-      $(id + "Tx").textContent = live ? (okText || "contando") : obs.length ? "sin chat" : (okText ? "no está en pantalla" : "sin contar");
-    }
-    onValue(ref(db, "presence"), (snap) => setLight("lightTimer", Object.values(snap.val() || {})), () => setLight("lightTimer", []));
-    onValue(rf("presence"), (snap) => setLight("lightMeta", Object.values(snap.val() || {}), "en pantalla"), () => setLight("lightMeta", [], "en pantalla"));
-    hooks.presence = () => {
-      const list = Object.entries(presence).map(([id, p]) => ({ id, ...(p || {}) }));
-      const el = $("connList");
-      const live = list.filter((p) => p.irc).length;
-      $("connSummary").textContent = db ? `${live} overlay(s) en pantalla · ${list.length} conectados` : "sin Firebase";
-      if (!list.length) { el.innerHTML = `<div class="status err"><span class="dot"></span>Nadie conectado</div>`; return; }
-      el.innerHTML = list.map((p) => `<div class="status ${p.irc ? "live" : ""}"><span class="dot"></span>${esc(p.where)}${p.id === INSTANCE ? " (este)" : ""}${p.irc ? " · en pantalla" : ""}</div>`).join("");
-    };
-    hooks.irc = () => hooks.presence();
-    hooks.presence();
-
-    /* ---------------- estilo ---------------- */
-    const FIELDS = [
-      ["Texto", [
-        ["goalTitle", "Título", "text", { wide: true }],
-        ["textpos", "Posición del texto", "select", { opts: { bottom: "Abajo", right: "Derecha", freehand: "Libre" } }],
-        ["fontName", "Fuente (Google Fonts)", "text"],
-        ["textAlign", "Alineación (libre)", "select", { opts: { left: "Izquierda", center: "Centro", right: "Derecha" } }],
-        ["titleFontSize", "Tamaño del título", "range", { min: 8, max: 60, step: 1 }],
-        ["fontSize", "Tamaño del número", "range", { min: 8, max: 60, step: 1 }],
-        ["freehandX", "Texto libre X", "range", { min: -200, max: 400, step: 5 }],
-        ["freehandY", "Texto libre Y", "range", { min: -100, max: 500, step: 5 }],
-        ["titleFontWeight", "Grosor del título", "select", { opts: { 300: "Light", 400: "Normal", 500: "Medium", 600: "Semi-Bold", 700: "Bold" } }],
-        ["fontWeight", "Grosor del número", "select", { opts: { 300: "Light", 400: "Normal", 500: "Medium", 600: "Semi-Bold", 700: "Bold" } }],
-        ["titleFontColor", "Color del título", "color"],
-        ["fontColor", "Color del número", "color"],
-        ["glowcolor", "Brillo del texto", "color"],
-        ["textglow", "Brillo del texto", "check"],
-        ["rainbowTextGlow", "Brillo del texto arcoíris", "check"]
-      ]],
-      ["Tamaño y posición en OBS", [
-        ["widgetScale", "Tamaño", "range", { min: 0.5, max: 2, step: 0.1 }],
-        ["widgetPosX", "Posición X", "range", { min: -200, max: 1920, step: 5 }],
-        ["widgetPosY", "Posición Y", "range", { min: -200, max: 1080, step: 5 }],
-        ["backop", "Opacidad del fondo", "range", { min: 0, max: 9, step: 1 }],
-        ["mirror", "Espejo (voltear)", "check"]
-      ]],
-      ["Calabaza", [
-        ["bordeColor", "Color del borde", "color"],
-        ["bordeGlow", "Brillo del borde", "color"],
-        ["faceLiquidColor", "Líquido de ojos, nariz y boca", "color"],
-        ["stemBorderColor", "Borde del tallo", "color"],
-        ["stemBorderGlow", "Brillo del tallo", "color"],
-        ["stemLiquidColor", "Líquido del tallo", "color"],
-        ["faceTint", "Color en la cara", "select", { opts: { block: "Activado", none: "Apagado" } }]
-      ]],
-      ["Líquido", [
-        ["fillcolor1", "Color 1", "color"],
-        ["fillcolor2", "Color 2", "color"],
-        ["glowcolb", "Brillo del líquido", "color"],
-        ["waveSpeed", "Velocidad de la ola", "range", { min: 1, max: 8, step: 0.5 }],
-        ["huerotat", "Color de burbujas", "range", { min: 0, max: 36, step: 1 }],
-        ["fillglow", "Brillo del líquido", "check"],
-        ["rainbowFill", "Líquido arcoíris", "check"],
-        ["rainbowGlow", "Brillo arcoíris", "check"]
-      ]],
-      ["Efectos", [
-        ["candleColor", "Color de la vela", "color"],
-        ["candle", "Vela que parpadea", "check"],
-        ["progressiveGlow", "Brillo que crece con el progreso", "check"],
-        ["bounce", "Rebote con cada sub", "check"],
-        ["completeFx", "Murciélagos y destellos al completar", "check"],
-        ["circleend", "Video de meta completa", "check"],
-        ["particles", "Burbujas", "check"],
-        ["waterEffect", "Video de efecto en el líquido", "check"]
-      ]],
-      ["Videos", [
-        ["petalsVideo", "Video de burbujas (URL)", "text", { wide: true }],
-        ["completeVideo", "Video de meta completa (URL)", "text", { wide: true }],
-        ["waterEffectVideo", "Video del líquido (URL)", "text", { wide: true }]
-      ]]
-    ];
-    const form = $("styleForm");
-    form.innerHTML = FIELDS.map(([g, list]) => `<div class="sgroup"><div class="sublabel">${esc(g)}</div><div class="sgrid">` + list.map(([k, label, type, o = {}]) => {
-      const id = "st_" + k;
-      if (type === "check") return `<label class="check"><input type="checkbox" id="${id}" data-k="${k}"> ${esc(label)}</label>`;
-      let input;
-      if (type === "select") input = `<select id="${id}" data-k="${k}">` + Object.entries(o.opts).map(([v, t]) => `<option value="${esc(v)}">${esc(t)}</option>`).join("") + `</select>`;
-      else if (type === "range") input = `<input type="range" id="${id}" data-k="${k}" min="${o.min}" max="${o.max}" step="${o.step}">`;
-      else if (type === "color") input = `<input type="color" id="${id}" data-k="${k}">`;
-      else input = `<input type="text" id="${id}" data-k="${k}">`;
-      const lab = type === "range" ? `${esc(label)} <b id="v_${k}"></b>` : esc(label);
-      return `<div class="field${o.wide ? " wide" : ""}"><label for="${id}">${lab}</label>${input}</div>`;
-    }).join("") + `</div></div>`).join("");
-
-    const fieldEls = [...form.querySelectorAll("[data-k]")];
-    hooks.style = () => {
-      for (const el of fieldEls) {
-        if (document.activeElement === el) continue;
-        const k = el.dataset.k, v = S[k];
-        if (el.type === "checkbox") el.checked = !!v;
-        else el.value = v;
-        const lab = $("v_" + k); if (lab) lab.textContent = v;
-      }
-    };
-    hooks.style();
-    let styleTimer = null;
-    for (const el of fieldEls) {
-      const ev = (el.type === "text") ? "change" : "input";
-      el.addEventListener(ev, () => {
-        const k = el.dataset.k, d = DEFAULT_STYLE[k];
-        let v = el.type === "checkbox" ? el.checked : el.value;
-        if (typeof d === "number") v = num(v, d);
-        S = { ...S, [k]: v };
-        const lab = $("v_" + k); if (lab) lab.textContent = v;
-        renderWidget();
-        clearTimeout(styleTimer);
-        if (db) styleTimer = setTimeout(() => set(rf("style"), S), 150);
-      });
-    }
-    $("btnStyleReset").addEventListener("click", () => {
-      if (!confirm("¿Volver al estilo original de la calabaza?")) return;
-      S = { ...DEFAULT_STYLE };
-      renderWidget(); hooks.style();
-      if (db) set(rf("style"), S);
-      flash("styleFlash", "Estilo restablecido.");
-    });
-
-    /* ---------------- descargar overlay ---------------- */
-    $("btnDownload").addEventListener("click", async () => {
-      let src;
-      try {
-        const r = await fetch(location.pathname, { cache: "no-store" });
-        if (!r.ok) throw new Error();
-        src = await r.text();
-      } catch (e) { flash("styleFlash", "No pude leer el archivo. Ábrelo desde GitHub Pages, no como archivo local."); return; }
-      const cut = (a, b) => { src = src.replace(new RegExp(a + "[\\s\\S]*?" + b, "g"), ""); };
-      cut("<!--PANEL-" + "HTML-BEGIN-->", "<!--PANEL-" + "HTML-END-->");
-      cut("\\/\\*PANEL-" + "CSS-BEGIN\\*\\/", "\\/\\*PANEL-" + "CSS-END\\*\\/");
-      cut("\\/\\*PANEL-" + "JS-BEGIN\\*\\/", "\\/\\*PANEL-" + "JS-END\\*\\/");
-      const baked = "<scr" + "ipt>window.__OVERLAY = " + JSON.stringify({ style: S }).replace(/</g, "\\u003c") + ";</scr" + "ipt>\n";
-      src = src.replace('<script type="module">', baked + '<script type="module">');
-      const a = document.createElement("a");
-      a.href = URL.createObjectURL(new Blob([src], { type: "text/html" }));
-      a.download = "meta-subs-overlay.html";
-      a.click();
-      setTimeout(() => URL.revokeObjectURL(a.href), 4000);
-      flash("styleFlash", "Overlay de la meta descargado. Para que cuente, ábrelo con #k=clave al final.");
-    });
-
-    /* ---------------- respaldo ---------------- */
-    $("btnExport").addEventListener("click", async () => {
-      if (!needDb()) return;
-      const [t, g, st, h] = await Promise.all([get(rf("tally")), get(rf("goal")), get(rf("style")), get(rf("history"))]);
-      const tv = t.val() || {};
-      const data = { exportado: new Date().toISOString(), conteo: num(tv.count), meta: g.val(), estilo: st.val(), historial: h.val() };
-      const a = document.createElement("a");
-      a.href = URL.createObjectURL(new Blob([JSON.stringify(data, null, 2)], { type: "application/json" }));
-      a.download = "respaldo-meta-subs-" + new Date().toISOString().slice(0, 10) + ".json";
-      a.click();
-      setTimeout(() => URL.revokeObjectURL(a.href), 4000);
-    });
-  }
-  /*PANEL-JS-END*/
 </script>
 </body>
 </html>

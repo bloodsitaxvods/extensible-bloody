@@ -376,6 +376,23 @@
   .pager { display: flex; align-items: center; gap: 8px; margin-top: 10px; }
   .pager span { flex: 1; text-align: center; font-size: 11px; color: var(--muted); letter-spacing: .04em; line-height: 1.4; }
   .pager button { padding: 7px 10px; font-size: 11px; }
+  /* meta de subs */
+  .meta-block { border-color: rgba(255,154,213,.45); }
+  .meta-now { display: flex; align-items: baseline; gap: 16px; flex-wrap: wrap; margin: 4px 0 16px; }
+  .meta-big { font-size: 44px; font-weight: 800; color: #fff; text-shadow: 0 0 16px rgba(255,79,184,.55); line-height: 1; }
+  .meta-sub { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; color: var(--accent-2); letter-spacing: .04em; }
+  .mdot { width: 12px; height: 12px; border-radius: 50%; background: #ff7a1a; box-shadow: 0 0 8px currentColor; flex: none; }
+  .meta-lbl { font-size: 12px; color: var(--muted); letter-spacing: .06em; align-self: center; }
+  .meta-list { display: flex; flex-direction: column; gap: 6px; margin-top: 12px; }
+  .mrow { display: flex; align-items: center; gap: 10px; padding: 8px 10px; border: 1px solid var(--border); border-radius: 10px; background: var(--panel-2); font-size: 13px; }
+  .mrow.now { border-color: var(--accent); box-shadow: 0 0 0 1px rgba(255,79,184,.25); }
+  .mrow .mn { width: 22px; color: var(--muted); font-weight: 700; }
+  .mrow .mname { flex: 1; color: var(--text); }
+  .mrow select { flex: 1; min-width: 0; padding: 6px 8px; font-size: 13px; }
+  .mrow .mdel { color: var(--danger); }
+  .mrow .mrange { color: var(--muted); font-size: 12px; min-width: 92px; text-align: right; }
+  .mrow button { padding: 5px 9px; font-size: 12px; }
+  .meta-hist-wrap .hist { max-height: 320px; }
   /* acceso */
   #gate { display: none; position: fixed; inset: 0; z-index: 50; background: radial-gradient(circle at 50% 30%, #2A0E2C 0%, var(--bg) 70%);
     align-items: center; justify-content: center; padding: 20px; }
@@ -416,7 +433,7 @@
 <div class="col-main">
 
   <div class="brand">
-    <div class="tabs"><a href="./" class="on">TIMER</a><a href="meta.html">META DE SUBS</a></div>
+    <h1>TIMER</h1><span>bloodsitax</span>
     <span class="who"><span id="whoami"></span> <button class="ghost small" id="btnLogout">Salir</button></span>
   </div>
   <div class="ovlights">
@@ -506,6 +523,70 @@
       <button class="qbtn don" data-quick="donation" style="--qc:#3FD9A0"><span class="qn">Donación 1 USD</span><span class="qv" id="qDonUsdv"></span></button>
       <button class="qbtn don" data-quick="donationMxn" style="--qc:#8FF5CF"><span class="qn">Donación 20 MXN</span><span class="qv" id="qDonMxnv"></span></button>
     </div>
+  </div>
+
+  <!-- META DE SUBS -->
+  <div class="block meta-block" id="metaBlock">
+    <div class="block-head">
+      <div class="title">Meta de subs</div>
+      <button class="fit ghost small" id="btnMetaShow">OCULTAR EN OBS</button>
+    </div>
+    <div class="meta-now">
+      <div class="meta-big" id="metaBig">0</div>
+      <div class="meta-sub"><span class="mdot" id="metaDot"></span><span id="metaSub">Calabaza · 0 / 15</span></div>
+    </div>
+
+    <div class="sublabel">Corregir el conteo (solo la meta; no toca el tiempo)</div>
+    <div class="row">
+      <button class="fit" id="btnMetaMinus">-1</button>
+      <button class="fit" id="btnMetaPlus">+1</button>
+      <div class="pin"><input type="number" class="nospin" id="metaSetVal" min="0" step="1" placeholder="0"><span>subs</span></div>
+      <button class="fit" id="btnMetaSet">NÚMERO FIJO</button>
+      <button class="fit ghost" id="btnMetaReset">Reiniciar a 0</button>
+    </div>
+    <div class="flash" id="metaFlash"></div>
+
+    <hr>
+    <div class="sublabel">Contenedores</div>
+    <div class="row">
+      <span class="meta-lbl">Cambiar cada</span>
+      <div class="pin"><input type="number" class="nospin" id="metaPer" min="1" step="1" value="15"><span>subs</span></div>
+      <button class="fit primary" id="btnMetaSave">GUARDAR</button>
+      <button class="fit ghost small" id="btnMetaUndo" hidden>Deshacer cambios</button>
+    </div>
+    <div class="meta-list" id="metaList"></div>
+    <div class="row" style="margin-top:8px;"><button class="fit ghost small" id="btnMetaAdd">+ AGREGAR CONTENEDOR</button></div>
+    <p class="hint" id="metaHint">En cada lugar elige qué contenedor va (se puede repetir), muévelo con las flechas o quítalo con la X. Los cambios se aplican al darle GUARDAR. Al llegar al final de cada contenedor brilla y salen murciélagos 4 segundos, y pasa al siguiente. Después del último se queda lleno y el número sigue subiendo.</p>
+
+    <div class="sublabel" style="margin-top:14px;">Efectos en OBS (no tocan el conteo)</div>
+    <div class="row">
+      <button class="fit small" id="btnFxMini">EFECTO 2 S</button>
+      <button class="fit small ghost" id="btnFxTrans">Probar cambio de contenedor</button>
+      <button class="fit small ghost" id="btnFxPremium">Probar efecto premium</button>
+      <button class="fit small ghost" id="btnMetaDownload">Descargar overlay meta</button>
+    </div>
+
+    <details class="meta-hist-wrap">
+      <summary class="sublabel" style="cursor:pointer; margin-top:14px;">Historial de la meta &rsaquo;</summary>
+      <div class="hist" id="metaHist"></div>
+      <div class="pager"><button class="ghost" id="mhNewer">&lsaquo; Más recientes</button><span id="mhInfo"></span><button class="ghost" id="mhOlder">Más antiguos &rsaquo;</button></div>
+    </details>
+  </div>
+
+  <!-- BITS ACUMULADOS -->
+  <div class="block" id="bitsBlock">
+    <div class="block-head">
+      <div class="title">Bits acumulados <small>todo el extensible</small></div>
+    </div>
+    <div class="meta-now"><div class="meta-big" id="bitsBig">0</div><div class="meta-sub">bits (cheers del chat; los Power-ups se suman a mano)</div></div>
+    <div class="row">
+      <div class="pin"><input type="number" class="nospin" id="bitsAddVal" min="1" step="1" placeholder="0"><span>bits</span></div>
+      <button class="fit" id="btnBitsAdd">+ SUMAR</button>
+      <button class="fit" id="btnBitsSet">NÚMERO FIJO</button>
+      <button class="fit ghost" id="btnBitsReset">Reiniciar a 0</button>
+    </div>
+    <div class="flash" id="bitsFlash"></div>
+    <p class="hint">Cada cheer del chat suma aquí sus bits una sola vez, aunque haya multiplicador o el timer haya terminado. "+ SUMAR" es para Power-ups o combos: <b>solo suma al total de bits</b>; el tiempo de esos bits súmalo con los botones del timer. Es la base para el contenedor de bits.</p>
   </div>
 
   <!-- MULTIPLICADOR DE TIEMPO -->
@@ -1297,22 +1378,60 @@
     } catch (e) { return false; }
   }
 
-  async function countEvent(lockPath, seconds, text, note, cat) {
-    if (!seconds || seconds <= 0) return;
+  /* Bits, raids y follows: la copia que reclama el evento lo pone en una fila, y la fila
+     suma varios eventos en UNA sola escritura al timer. Antes cada evento escribía por su
+     cuenta y, en una lluvia de cheers, Firebase rechazaba algunas escrituras y se perdían.
+     Ya no se suelta el candado: si después de muchos intentos no se pudo, queda un aviso. */
+  const bitsRef = ref(db, "bits");          // { total }  bits acumulados (para el contenedor de bits)
+  const timeQueue = [];
+  let timeBusy = false;
+  async function countEvent(lockPath, seconds, text, note, cat, bits = 0) {
+    seconds = Math.max(0, num(seconds));
+    bits = Math.max(0, Math.floor(num(bits)));
+    if (seconds <= 0 && bits <= 0) return;
     if (!(await claim(lockPath))) return;
     const m = mult(cat);
-    if (m > 1) text += " · " + fLabel(m);
-    const ms = Math.round(seconds * m * 1000);
-    let applied;
-    try {
-      applied = await applyDelta(ms, true);
-    } catch (e) {
-      // si la suma falla, libera el candado para que otro la pueda contar
-      set(ref(db, lockPath), null).catch(() => {});
-      return;
+    if (m > 1 && seconds > 0) text += " · " + fLabel(m);
+    timeQueue.push({ ms: Math.round(seconds * m * 1000), text, note, x2: m > 1, bits });
+    pumpTime();
+  }
+  async function pumpTime() {
+    if (timeBusy || !timeQueue.length) return;
+    timeBusy = true;
+    const batch = timeQueue.splice(0, 100);
+    const totalMs = batch.reduce((a, b) => a + b.ms, 0);
+    const totalBits = batch.reduce((a, b) => a + b.bits, 0);
+    // 1) tiempo: una sola transacción para todo el grupo
+    let applied = null;
+    if (totalMs > 0) {
+      for (let i = 0; i < 10 && applied === null; i++) {
+        try { applied = await applyDelta(totalMs, true); }
+        catch (e) { await sleep(Math.min(8000, 800 * (i + 1))); }
+      }
     }
-    if (applied) addHistory(m > 1 ? "auto-x2" : "auto", text, ms, note);
-    else addHistory("skip", text, ms, "No sumó: el timer ya había terminado");
+    // 2) total de bits: cuenta aunque el timer haya terminado (es otra cosa, como la meta de subs)
+    let bitsOk = true;
+    if (totalBits > 0) {
+      bitsOk = false;
+      for (let i = 0; i < 10 && !bitsOk; i++) {
+        try {
+          await runTransaction(bitsRef, (cur) => {
+            const c = (cur && typeof cur === "object") ? cur : {};
+            return { ...c, total: Math.max(0, Math.floor(num(c.total))) + totalBits, updated: now() };
+          });
+          bitsOk = true;
+        } catch (e) { await sleep(Math.min(8000, 800 * (i + 1))); }
+      }
+    }
+    for (const it of batch) {
+      if (it.ms <= 0) continue;
+      if (applied === null) addHistory("skip", it.text, it.ms, "NO SE CONTÓ: Firebase no guardó este tiempo después de varios intentos. Súmalo a mano.");
+      else if (applied) addHistory(it.x2 ? "auto-x2" : "auto", it.text, it.ms, it.note);
+      else addHistory("skip", it.text, it.ms, "No sumó: el timer ya había terminado");
+    }
+    if (!bitsOk) addHistory("skip", `${totalBits} bits no entraron al total de bits`, null, "Firebase no guardó el total de bits. Corrígelo a mano en el panel (Bits acumulados).");
+    timeBusy = false;
+    pumpTime();
   }
 
   // limpia candados de eventos de más de 48 h
@@ -1382,7 +1501,7 @@
   let metaTally = {};
   let timerPresence = {};
   if (CAN_COUNT) {
-    onValue(metaTallyRef, (s) => { metaTally = s.val() || {}; });
+    onValue(metaTallyRef, (s) => { metaTally = s.val() || {}; if (hooks.meta) hooks.meta(); });
     onValue(ref(db, "presence"), (s) => { timerPresence = s.val() || {}; });
   }
 
@@ -1508,6 +1627,10 @@
     if (!r || r.delta <= 0) return;                     // ya contada por otra copia, o nada nuevo
     const note = noteFn ? noteFn(r) : "";
     metaHistory(kind, text, r.delta, note);
+    // regalo de 5 o más de golpe: efecto premium en el overlay de la meta (lo manda solo la copia que lo contó)
+    if (op.t === "bulk" && op.n >= 5) {
+      set(ref(db, "meta/fx"), { id: "p" + op.lock, type: "premium", ts: now(), n: op.n, by: op.by || "" }).catch(() => {});
+    }
     const cat = planCat(plan), m = mult(cat);
     const ms = Math.round(secondsForPlan(plan) * r.delta * m * 1000);
     if (ms <= 0) return;
@@ -1567,8 +1690,8 @@
 
     if (cmd === "PRIVMSG" && tags.bits) {
       const bits = parseInt(tags.bits, 10);
-      if (bits > 0 && prices.bitsPer100 > 0) {
-        countEvent(lock, (bits / 100) * prices.bitsPer100, `${bits} bits de ${user}`, "", "bits");
+      if (bits > 0) {
+        countEvent(lock, prices.bitsPer100 > 0 ? (bits / 100) * prices.bitsPer100 : 0, `${bits} bits de ${user}`, "", "bits", bits);
       }
       return;
     }
@@ -2040,6 +2163,209 @@
       } catch (e) {
         flash("obsFlash", "No se pudo descargar: abre el panel desde GitHub Pages, no como archivo local.");
       }
+    });
+
+    /* ---------------- meta de subs ----------------
+       Las etapas y los contenedores se dibujan en meta.html; aquí solo se controlan. */
+    const metaStagesRef = ref(db, "meta/stages"), metaVisRef = ref(db, "meta/visible"), metaFxRef = ref(db, "meta/fx");
+    const CONT = {
+      calabaza: { name: "Calabaza", color: "#ff7a1a" },
+      verde:    { name: "Calabaza verde", color: "#22c55e" },
+      amarilla: { name: "Calabaza amarilla", color: "#facc15" },
+      morada:   { name: "Calabaza morada", color: "#a855f7" },
+      roja:     { name: "Calabaza roja", color: "#ef4444" }
+    };
+    const CONT_ORDER = ["calabaza", "verde", "amarilla", "morada", "roja"];
+    const MAX_SLOTS = 20;
+    const cleanSt = (v) => {
+      const per = Math.max(1, Math.min(10000, Math.floor(num(v && v.per, 15))));
+      let order = Array.isArray(v && v.order) ? v.order.filter((k) => CONT[k]).slice(0, MAX_SLOTS) : [];
+      if (!order.length) order = CONT_ORDER.slice();
+      return { per, order };
+    };
+    let mStages = cleanSt({}), mDraft = cleanSt({}), mDirty = false, mVisible = true;
+    const mCount = () => Math.max(0, Math.floor(num(metaTally && metaTally.count)));
+    const stageOf = (c, st) => Math.min(st.order.length - 1, Math.floor(c / st.per));
+
+    function renderMetaNow() {
+      const c = mCount(), st = mStages, i = stageOf(c, st), goal = st.per * (i + 1);
+      const k = CONT[st.order[i]] || CONT.calabaza;
+      $("metaBig").textContent = c;
+      $("metaSub").textContent = `${k.name} · ${c} / ${goal}` + (i === st.order.length - 1 && c >= goal ? " · último contenedor lleno" : ` · contenedor ${i + 1} de ${st.order.length}`);
+      $("metaDot").style.background = k.color;
+      $("metaDot").style.color = k.color;
+      renderMetaList();
+    }
+    function renderMetaList() {
+      const st = mDraft, live = stageOf(mCount(), mStages);
+      $("metaList").innerHTML = st.order.map((id, i) => {
+        const k = CONT[id], a = st.per * i, b = st.per * (i + 1);
+        const last = i === st.order.length - 1;
+        const opts = Object.keys(CONT).map((cid) => `<option value="${cid}" ${cid === id ? "selected" : ""}>${esc(CONT[cid].name)}</option>`).join("");
+        return `<div class="mrow ${!mDirty && i === live ? "now" : ""}">
+          <span class="mn">${i + 1}</span><span class="mdot" style="background:${k.color};color:${k.color}"></span>
+          <select data-mpick="${i}" title="Qué contenedor va en este lugar">${opts}</select>
+          <span class="mrange">${a} a ${b}${last ? " y más" : ""}</span>
+          <button class="ghost" data-mup="${i}" ${i === 0 ? "disabled" : ""} title="Subir">&#9650;</button>
+          <button class="ghost" data-mdown="${i}" ${last ? "disabled" : ""} title="Bajar">&#9660;</button>
+          <button class="ghost mdel" data-mdel="${i}" ${st.order.length <= 1 ? "disabled" : ""} title="Quitar este lugar">&#10005;</button>
+        </div>`;
+      }).join("");
+      $("btnMetaAdd").disabled = st.order.length >= MAX_SLOTS;
+      $("btnMetaUndo").hidden = !mDirty;
+      $("btnMetaSave").classList.toggle("primary", true);
+      $("btnMetaSave").textContent = mDirty ? "GUARDAR CAMBIOS" : "GUARDAR";
+    }
+    $("metaList").addEventListener("change", (e) => {
+      const sel = e.target.closest("[data-mpick]");
+      if (!sel || !CONT[sel.value]) return;
+      const o = mDraft.order.slice(); o[Number(sel.dataset.mpick)] = sel.value;
+      mDraft = { ...mDraft, order: o }; mDirty = true; renderMetaList();
+    });
+    $("btnMetaAdd").addEventListener("click", () => {
+      if (mDraft.order.length >= MAX_SLOTS) return;
+      // sugiere el primero que todavía no está en la lista (o repite el último)
+      const next = Object.keys(CONT).find((k) => !mDraft.order.includes(k)) || mDraft.order[mDraft.order.length - 1];
+      mDraft = { ...mDraft, order: [...mDraft.order, next] }; mDirty = true; renderMetaList();
+    });
+    $("metaList").addEventListener("click", (e) => {
+      const del = e.target.closest("[data-mdel]");
+      if (del) {
+        if (mDraft.order.length <= 1) return;
+        const o = mDraft.order.slice(); o.splice(Number(del.dataset.mdel), 1);
+        mDraft = { ...mDraft, order: o }; mDirty = true; renderMetaList();
+        return;
+      }
+      const up = e.target.closest("[data-mup]"), dn = e.target.closest("[data-mdown]");
+      if (!up && !dn) return;
+      const i = Number((up || dn).dataset[up ? "mup" : "mdown"]), j = up ? i - 1 : i + 1;
+      const o = mDraft.order.slice(); [o[i], o[j]] = [o[j], o[i]];
+      mDraft = { ...mDraft, order: o }; mDirty = true; renderMetaList();
+    });
+    $("metaPer").addEventListener("input", () => {
+      const v = Math.floor(num($("metaPer").value, 0));
+      if (v >= 1) { mDraft = { ...mDraft, per: v }; mDirty = true; renderMetaList(); }
+    });
+    $("btnMetaUndo").addEventListener("click", () => { mDraft = { ...mStages }; mDirty = false; $("metaPer").value = mStages.per; renderMetaList(); });
+    $("btnMetaSave").addEventListener("click", async () => {
+      const v = Math.floor(num($("metaPer").value, 0));
+      if (v < 1) { flash("metaFlash", "Pon cada cuántas subs cambia (1 o más)."); return; }
+      const st = cleanSt({ per: v, order: mDraft.order });
+      try {
+        await set(metaStagesRef, st);
+        metaHistory("manual", `Contenedores: cambia cada ${st.per} subs (${st.order.map((k) => CONT[k].name).join(", ")})`, null);
+        mDirty = false; flash("metaFlash", "Guardado. El overlay ya se acomodó.");
+      } catch (e) { flash("metaFlash", "No se pudo guardar."); }
+    });
+    onValue(metaStagesRef, (snap) => {
+      mStages = cleanSt(snap.val() || {});
+      if (!mDirty) { mDraft = { ...mStages }; if (document.activeElement !== $("metaPer")) $("metaPer").value = mStages.per; }
+      renderMetaNow();
+    });
+    onValue(metaVisRef, (snap) => {
+      mVisible = snap.val() !== false;
+      $("btnMetaShow").textContent = mVisible ? "OCULTAR EN OBS" : "MOSTRAR EN OBS";
+      $("btnMetaShow").classList.toggle("on", !mVisible);
+    });
+    $("btnMetaShow").addEventListener("click", () => set(metaVisRef, !mVisible));
+    hooks.meta = renderMetaNow;
+    renderMetaNow();
+
+    // correcciones: van a la meta (no tocan el tiempo)
+    async function metaOp(op, text) {
+      const r = await runOp(op);
+      if (r && r.failed) { flash("metaFlash", "Firebase no guardó el cambio. Intenta otra vez."); return; }
+      if (r && r.delta !== 0) metaHistory("manual", text, r.delta);
+      flash("metaFlash", r ? `Listo: ${r.after} subs.` : "Sin cambios.");
+    }
+    $("btnMetaPlus").addEventListener("click", () => metaOp({ t: "add", d: 1 }, "+1 a mano (solo la meta)"));
+    $("btnMetaMinus").addEventListener("click", () => { if (mCount() > 0) metaOp({ t: "add", d: -1 }, "-1 a mano (solo la meta)"); });
+    $("btnMetaSet").addEventListener("click", () => {
+      const v = Math.floor(num($("metaSetVal").value, -1));
+      if (v < 0) { flash("metaFlash", "Escribe un número de 0 en adelante."); return; }
+      metaOp({ t: "set", v }, `Número fijo: ${v}`);
+    });
+    $("btnMetaReset").addEventListener("click", () => {
+      if (!confirm("¿Reiniciar la meta de subs a 0? (el timer no cambia)")) return;
+      metaOp({ t: "set", v: 0 }, "Reiniciada a 0");
+    });
+
+    // efectos: el overlay los reproduce y no tocan el conteo
+    const fx = (type) => set(metaFxRef, { id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6), type, ts: now() });
+    $("btnFxMini").addEventListener("click", () => fx("mini"));
+    $("btnFxTrans").addEventListener("click", () => fx("transition"));
+    $("btnFxPremium").addEventListener("click", () => fx("premium"));
+
+    // descargar el overlay de la meta con los contenedores de ahora fijos
+    $("btnMetaDownload").addEventListener("click", async () => {
+      try {
+        const dir = location.pathname.replace(/[^/]*$/, "");
+        const src = await (await fetch(dir + "meta.html", { cache: "no-store" })).text();
+        const baked = "<script>window.__OVERLAY = " + JSON.stringify({ stages: mStages }).replace(/</g, "\\u003c") + ";<\/script>\n";
+        const mod = src.indexOf('<script type="module">');
+        if (mod < 0) throw new Error("archivo");
+        const out = src.slice(0, mod) + baked + src.slice(mod);
+        const a = document.createElement("a");
+        a.href = URL.createObjectURL(new Blob([out], { type: "text/html" }));
+        a.download = "meta-bloodsitax-overlay.html";
+        document.body.appendChild(a); a.click(); a.remove();
+        setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+        flash("metaFlash", "Overlay de la meta descargado. Para la luz verde, ábrelo con #k=clave al final.");
+      } catch (e) { flash("metaFlash", "No se pudo descargar: abre el panel desde GitHub Pages."); }
+    });
+
+    // historial de la meta, por páginas de 300
+    const metaHistEl = $("metaHist");
+    let mhPage = 0, mhAll = [], mhOff = null;
+    const MH_PAGE = 300;
+    function listenMetaHist() {
+      if (mhOff) mhOff();
+      mhOff = onValue(query(metaHistRef, limitToLast(MH_PAGE * (mhPage + 1) + 1)), (snap) => {
+        const rows = []; snap.forEach((c) => { const v = c.val(); if (v) rows.push(v); });
+        mhAll = rows.reverse(); renderMetaHist();
+      });
+    }
+    function renderMetaHist() {
+      const from = mhPage * MH_PAGE, rows = mhAll.slice(from, from + MH_PAGE);
+      $("mhInfo").textContent = rows.length ? `Página ${mhPage + 1} · ${from + 1} a ${from + rows.length}` : (mhPage ? "No hay más" : "Sin movimientos");
+      $("mhNewer").disabled = mhPage === 0;
+      $("mhOlder").disabled = mhAll.length <= from + MH_PAGE;
+      metaHistEl.innerHTML = rows.map((h) => {
+        const kind = ({ manual: "manual", warn: "skip", anon: "auto" })[h.kind] || "auto";
+        const d = h.delta == null ? (h.kind === "warn" ? "AVISO" : "") : (h.delta > 0 ? "+" + h.delta : String(h.delta));
+        const note = h.note ? `<span class="hn">${esc(h.note)}</span>` : "";
+        const by = h.by ? ` · ${esc(h.by)}` : "";
+        return `<div class="hrow ${kind}"><span class="hx">${esc(h.text)}</span><span class="hd">${d}</span>${note}<span class="ht">${timeLabel(h.ts)}${by}</span></div>`;
+      }).join("");
+    }
+    $("mhOlder").addEventListener("click", () => { mhPage++; listenMetaHist(); metaHistEl.scrollTop = 0; });
+    $("mhNewer").addEventListener("click", () => { mhPage = Math.max(0, mhPage - 1); listenMetaHist(); metaHistEl.scrollTop = 0; });
+    listenMetaHist();
+
+    /* ---------------- bits acumulados ---------------- */
+    let bitsTotal = 0;
+    onValue(bitsRef, (snap) => { const v = snap.val() || {}; bitsTotal = Math.max(0, Math.floor(num(v.total))); $("bitsBig").textContent = bitsTotal.toLocaleString("es-MX"); });
+    async function bitsTx(fn, text) {
+      try {
+        let after = 0;
+        await runTransaction(bitsRef, (cur) => { const c = (cur && typeof cur === "object") ? cur : {}; after = Math.max(0, Math.floor(fn(Math.max(0, Math.floor(num(c.total)))))); return { ...c, total: after, updated: now() }; });
+        addHistory("manual", text, null);
+        flash("bitsFlash", `Listo: ${after.toLocaleString("es-MX")} bits.`);
+      } catch (e) { flash("bitsFlash", "No se pudo guardar."); }
+    }
+    $("btnBitsAdd").addEventListener("click", () => {
+      const v = Math.floor(num($("bitsAddVal").value, 0));
+      if (v <= 0) { flash("bitsFlash", "Escribe cuántos bits sumar."); return; }
+      bitsTx((t) => t + v, `Bits sumados a mano al total: ${v}`);
+    });
+    $("btnBitsSet").addEventListener("click", () => {
+      const v = Math.floor(num($("bitsAddVal").value, -1));
+      if (v < 0) { flash("bitsFlash", "Escribe el número de bits."); return; }
+      bitsTx(() => v, `Total de bits fijado en ${v}`);
+    });
+    $("btnBitsReset").addEventListener("click", () => {
+      if (!confirm("¿Reiniciar el total de bits a 0? (el timer no cambia)")) return;
+      bitsTx(() => 0, "Total de bits reiniciado a 0");
     });
 
     /* ---------------- multiplicador ---------------- */
