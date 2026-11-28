@@ -401,9 +401,9 @@
   .mpv-wrap > summary small { color: var(--muted); font-weight: 400; letter-spacing: .04em; text-transform: none; }
   .mpv-wrap > summary .chev { margin-left: auto; transition: transform .2s; }
   .mpv-wrap[open] > summary .chev { transform: rotate(90deg); }
-  .mpv { position: relative; aspect-ratio: 16 / 9; overflow: hidden; margin: 0 12px; border-radius: 10px;
+  .mpv { position: relative; aspect-ratio: 1 / 1; width: min(360px, calc(100% - 24px)); overflow: hidden; margin: 0 auto; border-radius: 10px;
     background: repeating-conic-gradient(#1a0c20 0% 25%, #12071a 0% 50%) 50% / 18px 18px; }
-  .mpv iframe { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; border: 0; transform-origin: 0 0; pointer-events: none; background: transparent; }
+  .mpv iframe { position: absolute; left: 0; top: 0; width: 640px; height: 640px; border: 0; transform-origin: 0 0; pointer-events: none; background: transparent; }
   .mpv-bar { display: flex; align-items: center; gap: 10px; padding: 8px 12px 12px; font-size: 12px; color: var(--accent-2); }
   .mpv-bar span { flex: 1; }
   /* acceso */
@@ -550,11 +550,10 @@
     </div>
 
     <details class="mpv-wrap" id="metaPvWrap">
-      <summary class="mpv-sum">Vista previa de la meta <small>(igual que en OBS)</small><span class="chev">&rsaquo;</span></summary>
+      <summary class="mpv-sum">Vista previa de la meta <small>(igual que en OBS, fuente de 640 x 640)</small><span class="chev">&rsaquo;</span></summary>
       <div class="mpv" id="metaPv"></div>
       <div class="mpv-bar">
         <span id="metaPvNext"></span>
-        <button class="ghost small" id="btnMetaPvZoom">Ver lienzo completo</button>
       </div>
       <p class="hint" style="margin:0 12px 12px;">Es el overlay real en vivo: muestra los cambios de contenedor, los efectos y lo que pruebes con los botones. Mientras está cerrada no consume nada.</p>
     </details>
@@ -815,7 +814,7 @@
       <button class="fit primary" id="btnCopyObs">COPIAR LINK TIMER CON CLAVE</button>
       <button class="fit ghost" id="btnCopyView">Sin clave</button>
     </div>
-    <div class="sublabel" style="margin-top:14px;">Overlay de la meta de subs</div>
+    <div class="sublabel" style="margin-top:14px;">Overlay de la meta de subs <span style="text-transform:none;letter-spacing:.02em;color:var(--accent-2)">· en OBS ponle 640 x 640 (se centra sola)</span></div>
     <div class="row">
       <button class="fit primary" id="btnCopyMeta">COPIAR LINK META CON CLAVE</button>
       <button class="fit ghost" id="btnCopyMetaView">Sin clave</button>
@@ -2301,12 +2300,10 @@
     /* vista previa: el overlay real (meta.html?display, sin clave: solo mira) dentro de un cuadro.
        Se crea al abrir y se borra al cerrar, para que cerrada no gaste nada. */
     const pvWrap = $("metaPvWrap"), pvBox = $("metaPv");
-    let pvZoomFull = lsGet("bs_meta_pv_full") === "1";
-    const PV_CROP = 900;                     // acercado: muestra la esquina donde va la meta (900 px de ancho del lienzo)
+    // la vista previa tiene el tamaño recomendado para la fuente de OBS (640 x 640), a escala
     function pvScale() {
       const fr = pvBox.querySelector("iframe"); if (!fr) return;
-      fr.style.transform = `scale(${pvBox.clientWidth / (pvZoomFull ? 1920 : PV_CROP)})`;
-      $("btnMetaPvZoom").textContent = pvZoomFull ? "Acercar a la meta" : "Ver lienzo completo";
+      fr.style.transform = `scale(${pvBox.clientWidth / 640})`;
     }
     function pvOpen() {
       if (pvBox.querySelector("iframe")) return;
@@ -2321,10 +2318,6 @@
     pvWrap.addEventListener("toggle", () => {
       lsSet("bs_meta_pv", pvWrap.open ? "1" : "0");
       if (pvWrap.open) pvOpen(); else pvClose();
-    });
-    $("btnMetaPvZoom").addEventListener("click", (e) => {
-      e.preventDefault();
-      pvZoomFull = !pvZoomFull; lsSet("bs_meta_pv_full", pvZoomFull ? "1" : "0"); pvScale();
     });
     new ResizeObserver(pvScale).observe(pvBox);
     if (lsGet("bs_meta_pv") !== "0") pvWrap.open = true;      // abierta por defecto; recuerda si la cerraste
