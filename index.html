@@ -393,6 +393,19 @@
   .mrow .mrange { color: var(--muted); font-size: 12px; min-width: 92px; text-align: right; }
   .mrow button { padding: 5px 9px; font-size: 12px; }
   .meta-hist-wrap .hist { max-height: 320px; }
+  /* vista previa de la meta (el overlay real dentro de un cuadro chico) */
+  .mpv-wrap { margin: 0 0 16px; border: 1px solid var(--border); border-radius: 12px; background: var(--bg); }
+  .mpv-wrap > summary { list-style: none; cursor: pointer; padding: 10px 14px; font-size: 12px; font-weight: 700; letter-spacing: .14em;
+    text-transform: uppercase; color: var(--text); display: flex; align-items: center; gap: 8px; }
+  .mpv-wrap > summary::-webkit-details-marker { display: none; }
+  .mpv-wrap > summary small { color: var(--muted); font-weight: 400; letter-spacing: .04em; text-transform: none; }
+  .mpv-wrap > summary .chev { margin-left: auto; transition: transform .2s; }
+  .mpv-wrap[open] > summary .chev { transform: rotate(90deg); }
+  .mpv { position: relative; aspect-ratio: 16 / 9; overflow: hidden; margin: 0 12px; border-radius: 10px;
+    background: repeating-conic-gradient(#1a0c20 0% 25%, #12071a 0% 50%) 50% / 18px 18px; }
+  .mpv iframe { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; border: 0; transform-origin: 0 0; pointer-events: none; background: transparent; }
+  .mpv-bar { display: flex; align-items: center; gap: 10px; padding: 8px 12px 12px; font-size: 12px; color: var(--accent-2); }
+  .mpv-bar span { flex: 1; }
   /* acceso */
   #gate { display: none; position: fixed; inset: 0; z-index: 50; background: radial-gradient(circle at 50% 30%, #2A0E2C 0%, var(--bg) 70%);
     align-items: center; justify-content: center; padding: 20px; }
@@ -535,6 +548,16 @@
       <div class="meta-big" id="metaBig">0</div>
       <div class="meta-sub"><span class="mdot" id="metaDot"></span><span id="metaSub">Calabaza · 0 / 15</span></div>
     </div>
+
+    <details class="mpv-wrap" id="metaPvWrap">
+      <summary class="mpv-sum">Vista previa de la meta <small>(igual que en OBS)</small><span class="chev">&rsaquo;</span></summary>
+      <div class="mpv" id="metaPv"></div>
+      <div class="mpv-bar">
+        <span id="metaPvNext"></span>
+        <button class="ghost small" id="btnMetaPvZoom">Ver lienzo completo</button>
+      </div>
+      <p class="hint" style="margin:0 12px 12px;">Es el overlay real en vivo: muestra los cambios de contenedor, los efectos y lo que pruebes con los botones. Mientras está cerrada no consume nada.</p>
+    </details>
 
     <div class="sublabel">Corregir el conteo (solo la meta; no toca el tiempo)</div>
     <div class="row">
@@ -2192,6 +2215,11 @@
       const k = CONT[st.order[i]] || CONT.calabaza;
       $("metaBig").textContent = c;
       $("metaSub").textContent = `${k.name} · ${c} / ${goal}` + (i === st.order.length - 1 && c >= goal ? " · último contenedor lleno" : ` · contenedor ${i + 1} de ${st.order.length}`);
+      const lastSt = i === st.order.length - 1;
+      const pvNext = $("metaPvNext");
+      if (pvNext) pvNext.textContent = lastSt
+        ? (c >= goal ? `Último contenedor lleno · ${c - goal} subs extra` : `Último contenedor · faltan ${goal - c} para llenarlo`)
+        : `Faltan ${goal - c} subs para pasar a ${(CONT[st.order[i + 1]] || CONT.calabaza).name}`;
       $("metaDot").style.background = k.color;
       $("metaDot").style.color = k.color;
       renderMetaList();
@@ -2269,6 +2297,37 @@
     });
     $("btnMetaShow").addEventListener("click", () => set(metaVisRef, !mVisible));
     hooks.meta = renderMetaNow;
+
+    /* vista previa: el overlay real (meta.html?display, sin clave: solo mira) dentro de un cuadro.
+       Se crea al abrir y se borra al cerrar, para que cerrada no gaste nada. */
+    const pvWrap = $("metaPvWrap"), pvBox = $("metaPv");
+    let pvZoomFull = lsGet("bs_meta_pv_full") === "1";
+    const PV_CROP = 900;                     // acercado: muestra la esquina donde va la meta (900 px de ancho del lienzo)
+    function pvScale() {
+      const fr = pvBox.querySelector("iframe"); if (!fr) return;
+      fr.style.transform = `scale(${pvBox.clientWidth / (pvZoomFull ? 1920 : PV_CROP)})`;
+      $("btnMetaPvZoom").textContent = pvZoomFull ? "Acercar a la meta" : "Ver lienzo completo";
+    }
+    function pvOpen() {
+      if (pvBox.querySelector("iframe")) return;
+      const fr = document.createElement("iframe");
+      fr.src = location.pathname.replace(/[^/]*$/, "") + "meta.html?display";
+      fr.title = "Vista previa de la meta";
+      fr.setAttribute("tabindex", "-1");
+      pvBox.appendChild(fr);
+      pvScale();
+    }
+    function pvClose() { pvBox.innerHTML = ""; }
+    pvWrap.addEventListener("toggle", () => {
+      lsSet("bs_meta_pv", pvWrap.open ? "1" : "0");
+      if (pvWrap.open) pvOpen(); else pvClose();
+    });
+    $("btnMetaPvZoom").addEventListener("click", (e) => {
+      e.preventDefault();
+      pvZoomFull = !pvZoomFull; lsSet("bs_meta_pv_full", pvZoomFull ? "1" : "0"); pvScale();
+    });
+    new ResizeObserver(pvScale).observe(pvBox);
+    if (lsGet("bs_meta_pv") !== "0") pvWrap.open = true;      // abierta por defecto; recuerda si la cerraste
     renderMetaNow();
 
     // correcciones: van a la meta (no tocan el tiempo)
